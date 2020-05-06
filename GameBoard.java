@@ -126,7 +126,7 @@ public class GameBoard extends Frame {
 				coor = findIndex(area1, square);
 				Color color = Color.GREEN;
 				//area1[coor[0]][coor[1]].setText(String.valueOf(area1Int[coor[0]][coor[1]]));
-				lbl1.setText( coor[0] + " et " + coor[1]);
+				//lbl1.setText( coor[0] + " et " + coor[1]);
 				if(batDir == 1){
 					for(int i = coor[0]; i<coor[0]+batLen; i++){
 						if(i>=area1.length){
