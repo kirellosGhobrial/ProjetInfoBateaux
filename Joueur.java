@@ -33,6 +33,7 @@ public class Joueur{
 		}
 		
 	}
+	
 	public void imprim(){
 		System.out.println("tableau de "+ nomJoueur);
 		for(int i=0; i<tabBat.length; i++){

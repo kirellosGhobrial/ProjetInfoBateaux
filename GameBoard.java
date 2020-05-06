@@ -75,7 +75,6 @@ public class GameBoard extends Frame {
 		top.add(lblTop);
 		
 		//centre
-		
 		Border border = BorderFactory.createLineBorder(Color.BLUE, 5);
         centre.setBorder(border);
         /*
@@ -411,6 +410,5 @@ public class GameBoard extends Frame {
 	
 	public static void main(String[] args){
 		GameBoard test1 = new GameBoard();
-		
 	}
 }
