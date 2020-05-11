@@ -440,7 +440,6 @@ public class GameBoard extends JFrame{
 					coordY = coor[0];
 					attaque.requestFocus();
 				}
-				
 			}
 		}
 		@Override public void mousePressed(MouseEvent evt) { }
