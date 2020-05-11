@@ -8,9 +8,22 @@ public class Main{
 	public static void main(String[] args){
 		
 		//Joue le son du jeu
+		JButton buttonMusique = new JButton("Couper le son");
 		Audio sonBataille = new Audio("BattleshipSong.wav");
-		
-		
+		sonBataille.changeSon();
+		buttonMusique.setFocusable(false);
+		buttonMusique.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent evt){
+				sonBataille.changeSon();
+				if(sonBataille.estSon){
+					JButton button2 = new JButton("Couper le son");
+				}else{
+					JButton button2 = new JButton("Mettre le son");
+				}
+			}
+		});
+				
 		//Crée une nouvelle fenêtre
 		JFrame frame1 = new JFrame();
 		frame1.setLayout(new BorderLayout());
@@ -110,7 +123,8 @@ public class Main{
 		//Ajoute les boutons
 		panel2.add(multijoueur);
 		panel2.add(ordinateur);
-	
+		panel2.add(buttonMusique, BorderLayout.NORTH);
+
 		
 		//Ajoute la fenêtre principale et la configure
 		frame1.add(panel2, BorderLayout.SOUTH);
