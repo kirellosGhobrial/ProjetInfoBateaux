@@ -6,8 +6,8 @@ import javax.swing.border.Border;
 
 public class GameBoard extends JFrame{
 	
-	Joueur j1 = new Joueur(8, 8, "Joueur 1");
-	Joueur j2 = new Joueur(8, 8, "Joueur 2");
+	Joueur j1 = new Joueur(10, 10, "Joueur 1");
+	Joueur j2 = new Joueur(10, 10, "Joueur 2");
 	Joueur jTemp1;
 	Joueur jTemp2;
 	int intTemp;
@@ -15,8 +15,8 @@ public class GameBoard extends JFrame{
 	int jou = 1;
 	int batLen = 3;
 	int batDir = 2;
-	int longueur=8 ;
-	int largeur=8;
+	int longueur=10 ;
+	int largeur=10;
 	int coordX = 0;
 	int coordY = 0;
 	JFrame mainFrame = new JFrame();
@@ -27,8 +27,8 @@ public class GameBoard extends JFrame{
 	JPanel centre = new JPanel(new BorderLayout());
 	JPanel map1 = new JPanel(new GridLayout(longueur,largeur,5,5));
 	JLabel[][] area1 = new JLabel[longueur][largeur];
-	int[][] area1Int = new int[8][8];
-	int[][] area2Int = new int[8][8];
+	int[][] area1Int = new int[longueur][largeur];
+	int[][] area2Int = new int[longueur][largeur];
 	int[] coor = new int[2];
 	JPanel map2 = new JPanel(new GridLayout(longueur,largeur,5,5));
 	JLabel[][] area2 = new JLabel[longueur][largeur];
@@ -39,7 +39,6 @@ public class GameBoard extends JFrame{
 	boolean allowMouse1 = false;
 	boolean allowMouse2 = false;
 	int nbBat = 0;
-
 	Audio sonBataille = new Audio("BattleshipSong.wav");
 	Audio explosion = new Audio("Explosion.wav");
 	Audio tombeDansLeau = new Audio("tombeDansLeau.wav");
@@ -51,7 +50,7 @@ public class GameBoard extends JFrame{
 		j1.nomJoueur = name1;
 		j2.nomJoueur = name2;
 		mainFrame.setLayout(new BorderLayout());
-		mainFrame.setTitle("GameBoard");
+		mainFrame.setTitle("BATAILLE NAVALE");
 		mainFrame.setSize(1300,700);
 		
 		//maps
@@ -79,6 +78,7 @@ public class GameBoard extends JFrame{
 				area2[i][j].setPreferredSize(new Dimension(50, 20));
 			}
 		}
+		
 		map1.setBackground(Color.CYAN);
 		map2.setBackground(Color.CYAN);
 		map1.setSize(100,100);
@@ -87,15 +87,11 @@ public class GameBoard extends JFrame{
 		//top
 		top.setSize(100,50);	
 		top.add(lblTop);
+		top.add(buttonMusique);
 		
 		//centre
-		
 		Border border = BorderFactory.createLineBorder(Color.BLUE, 5);
         centre.setBorder(border);
-
-		//lbl
-		lbl1.setAlignmentX(Component.RIGHT_ALIGNMENT);
-		lbl2.setAlignmentX(Component.CENTER_ALIGNMENT);
 		centre.add(lbl1, BorderLayout.CENTER);
 		centre.add(lbl2, BorderLayout.NORTH);
 		
@@ -139,8 +135,6 @@ public class GameBoard extends JFrame{
 			}
 		});
 		
-		//buttons.add(attaque);
-		
 		//bateau
 		btnBateau.addActionListener(new ActionListener(){
 			@Override
@@ -149,22 +143,25 @@ public class GameBoard extends JFrame{
 				mapClear(area1);
 				mapIntClear(area1Int);
 				allowMouse1= true;
+				btnBateau.setText("recommencer");
 				if(jou == 1){
-					j1.effacerBat();
+					j1.effacerTabBat();
 					System.out.println("tableau de bateaux");
 					j1.imprim(j1.tabBat);
 					placerBateau(j1);
 				}else{
-					j2.effacerBat();
+					j2.effacerTabBat();
 					System.out.println("tableau de bateaux");
 					j2.imprim(j2.tabBat);
 					placerBateau(j2);
 				}
 			}
 		});
+		
 		buttons.add(btnBateau);
 		btnBateau.requestFocus();
 		buttonMusique.setFocusable(false);
+		
 		buttonMusique.addActionListener(new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent evt){
@@ -176,55 +173,6 @@ public class GameBoard extends JFrame{
 				}
 			}
 		});
-		top.add(buttonMusique);
-		
-		
-		/*
-		buttons.addKeyListener(new KeyListener(){
-			@Override
-			public void keyPressed(KeyEvent evt){
-				if(evt.getKeyCode() == KeyEvent.VK_SPACE){
-					if(jou==1){
-						System.out.println("attaque numero " + nomAttaque);
-						System.out.println("attaque faite a Y: " + coordY+ " X: " + coordX);
-						attaqueJou(coordY, coordX, 1);
-						System.out.println("tableau d'attaques de "+j1.nomJoueur);
-						j1.imprim(j1.tabEn);
-						intTemp = j2.nomBatCoul();
-						System.out.println("nombre de bateaux coules : "+intTemp);
-						if(intTemp ==5){
-							jeuTermine(j1);
-						}
-						refreshMap1(j2.tabBat);
-						refreshMap2(j2.tabEn);
-						jou =2;
-					}else{
-						System.out.println("attaque numero " + nomAttaque);
-						System.out.println("attaque faite a Y: " + coordY+ " X: " + coordX);
-						attaqueJou(coordY, coordX, 2);
-						System.out.println("tableau d'attaques de "+j2.nomJoueur);
-						j2.imprim(j2.tabEn);
-						intTemp = j1.nomBatCoul();
-						System.out.println("nombre de bateaux coules : "+intTemp);
-						if(intTemp ==5){
-							jeuTermine(j2);
-						}
-						refreshMap1(j1.tabBat);
-						refreshMap2(j1.tabEn);
-						jou=1;
-						nomAttaque++;
-					}
-			
-				}
-			}
-			
-			@Override
-			public void keyReleased(KeyEvent evt){}	
-			
-			@Override
-			public void keyTyped(KeyEvent evt){}		
-		});
-		*/
 		
 		//add , visible
 		mainFrame.add(map1, BorderLayout.EAST);
@@ -242,7 +190,7 @@ public class GameBoard extends JFrame{
 		public void mouseEntered(MouseEvent evt){
 			if(allowMouse1){
 				JLabel square = (JLabel)evt.getSource();
-				coor = findIndex(area1, square);
+				coor = trouverIndice(area1, square);
 				Color color = Color.GREEN;
 				//area1[coor[0]][coor[1]].setText(String.valueOf(area1Int[coor[0]][coor[1]]));
 				//lbl1.setText( coor[0] + " et " + coor[1]);
@@ -292,7 +240,7 @@ public class GameBoard extends JFrame{
 		public void mouseExited(MouseEvent evt){
 			if(allowMouse1){
 				JLabel square = (JLabel)evt.getSource();
-				coor = findIndex(area1, square);
+				coor = trouverIndice(area1, square);
 				if(batDir == 1){
 					for(int i = coor[0]; i<coor[0]+batLen; i++){
 						if(i<area1.length && area1Int[i][coor[1]] == 0){
@@ -314,7 +262,7 @@ public class GameBoard extends JFrame{
 		public void mouseClicked(MouseEvent evt) {
 			if(allowMouse1){
 				JLabel square = (JLabel)evt.getSource();
-				coor = findIndex(area1, square);
+				coor = trouverIndice(area1, square);
 				if(evt.getButton() == MouseEvent.BUTTON1){
 					if(batDir == 1){
 						for(int i = coor[0]; i<coor[0]+batLen; i++){
@@ -406,7 +354,7 @@ public class GameBoard extends JFrame{
 		public void mouseEntered(MouseEvent evt){
 			if(allowMouse2){	
 				JLabel square = (JLabel)evt.getSource();
-				coor = findIndex(area2, square);
+				coor = trouverIndice(area2, square);
 				if(area2Int[coor[0]][coor[1]] == 0){
 					area2[coor[0]][coor[1]].setBackground(Color.GRAY);
 				}
@@ -417,7 +365,7 @@ public class GameBoard extends JFrame{
 		public void mouseExited(MouseEvent evt){
 			if(allowMouse2){	
 					JLabel square = (JLabel)evt.getSource();
-					int[] coor = findIndex(area2, square);
+					int[] coor = trouverIndice(area2, square);
 				if(area2Int[coor[0]][coor[1]] == 0){
 					area2[coor[0]][coor[1]].setBackground(Color.WHITE);
 				}
@@ -428,7 +376,7 @@ public class GameBoard extends JFrame{
 		public void mouseClicked(MouseEvent evt) {
 			if(allowMouse2){
 				JLabel square = (JLabel)evt.getSource();
-				coor = findIndex(area2, square);
+				coor = trouverIndice(area2, square);
 				if(area2Int[coordY][coordX]==3){
 						area2[coordY][coordX].setBackground(Color.WHITE);
 						area2Int[coordY][coordX] = 0;
@@ -442,11 +390,12 @@ public class GameBoard extends JFrame{
 				}
 			}
 		}
+		
 		@Override public void mousePressed(MouseEvent evt) { }
 		@Override public void mouseReleased(MouseEvent evt) { }		
 	}
 	
-	public int[] findIndex(JLabel[][] tab, JLabel lbl){
+	public int[] trouverIndice(JLabel[][] tab, JLabel lbl){
 		int[] newTab1 = {-1, -1};
 		for(int i = 0; i<tab.length; i++){
 			for(int j=0; j<tab[0].length; j++){
@@ -483,7 +432,7 @@ public class GameBoard extends JFrame{
 		area2Int = tab;
 		for(int i=0; i<tab.length;i++){
 			for(int j=0; j<tab[0].length; j++){
-				area2[i][j].setText(tab[i][j]+ "");
+				//area2[i][j].setText(tab[i][j]+ "");
 				switch(tab[i][j]){
 					case 0 :
 						area2[i][j].setBackground(Color.WHITE);
@@ -621,10 +570,5 @@ public class GameBoard extends JFrame{
 		frameFini.setVisible(true);
 		mainFrame.dispose();
 	}
-	
-	public void sleep(int n){
-		try{
-			Thread.sleep(n);
-		}catch(Exception e){}
-	}
+
 }

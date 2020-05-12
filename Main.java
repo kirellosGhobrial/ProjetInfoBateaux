@@ -6,7 +6,7 @@ public class Main{
 	
 	
 	public static void main(String[] args){
-		
+	
 		JFrame frame1 = new JFrame();
 		frame1.setLayout(new BorderLayout());
 		frame1.setSize(350,200);
@@ -25,6 +25,7 @@ public class Main{
 		label1.setSize(label2.getPreferredSize());
 		button1.setBounds(100, 500, 50, 50);
 		label2.setSize(label2.getPreferredSize());
+		
 		button1.addActionListener(new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent evt){

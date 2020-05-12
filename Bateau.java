@@ -10,8 +10,7 @@ public class Bateau {
     public int[][] posBat;
     public boolean[] posTouche;
     public String coule = "le bateau n'est pas encore coule";
-    // rentrer (1,true,2,2) pour créer une barque en B2,C2
-    // rentrer (3,true,3,9) pour créer un cargo en I3,I4,I5,I6
+
     public Bateau(int nb,int orient, int x, int y) {
         if( nb == 4){
 		    this.tailleBateau = 2;

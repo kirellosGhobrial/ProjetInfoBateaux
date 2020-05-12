@@ -3,9 +3,10 @@ import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 
 public class  Audio{
-		File musique;
-		Clip clip;
-		boolean estSon = false;
+	
+	File musique;
+	Clip clip;
+	boolean estSon = false;
 		
 	public Audio(String fichier){
 		musique = new File(fichier);
@@ -36,8 +37,5 @@ public class  Audio{
 			}catch(Exception ex){} 
 			estSon = true;
 		}
-	}
-	
-	
-		
+	}	
 }

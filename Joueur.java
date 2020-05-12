@@ -44,7 +44,7 @@ public class Joueur{
 		System.out.println("attaque non faite ");
 	}
 	
-	public void effacerBat(){
+	public void effacerTabBat(){
 		c = 0;
 		for(int i=0; i<tabBat.length; i++){
 			for(int j=0; j<tabBat.length; j++){
