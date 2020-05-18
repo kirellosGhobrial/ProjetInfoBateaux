@@ -4,12 +4,39 @@ import javax.swing.*;
 
 public class Main{
 	
+	boolean contreOrdi = false;
+	
+	JFrame frame1 = new JFrame(); 	//Crée une nouvelle fenêtre
+	
+	JPanel panel1 = new JPanel(new FlowLayout());
+	JPanel panel2 = new JPanel(new FlowLayout());
+	JLabel label1 = new JLabel("Nom du premier joueur : ");
+	JLabel label2 = new JLabel("Nom du deuxieme joueur : ");
+	JLabel label3 = new JLabel("Veuillez choisir votre mode de jeu");
+	JLabel label4 = new JLabel("Veuillez choisir votre nom");
+	JTextField textField1 = new JTextField(12);
+	JTextField textField2 = new JTextField(12);
+	JButton buttonMusique = new JButton("Couper le son");
+	Audio sonBataille = new Audio("BattleshipSong.wav");
+	JButton commencer = new JButton("Commencer la bataille");
+	JButton multijoueur = new JButton("Multijoueur");
+	JButton ordinateur = new JButton("Ordinateur");
+	String image= "/Users/aminemr/Pictures/bataillenavale.png" ; //Insertion d'une image à partir de son URL
+	ImageIcon battle = new ImageIcon(image);
+	JLabel label5 = new JLabel(battle, JLabel.CENTER);
+	
+	//Crée deux variables pour stocker le nom des Joueurs
+	String nameJ1;
+	String nameJ2;
 	
 	public static void main(String[] args){
+		new Main();
+
+	}
+	
+	public Main(){
 		
-		//Joue le son du jeu
-		JButton buttonMusique = new JButton("Couper le son");
-		Audio sonBataille = new Audio("BattleshipSong.wav");
+		//le son du jeu
 		sonBataille.changeSon();
 		buttonMusique.setFocusable(false);
 		buttonMusique.addActionListener(new ActionListener(){
@@ -23,53 +50,22 @@ public class Main{
 				}
 			}
 		});
-				
-		//Crée une nouvelle fenêtre
-		JFrame frame1 = new JFrame();
+
 		frame1.setLayout(new BorderLayout());
 		frame1.setSize(1000,400); 		//Taille de la fenêtre
-		frame1.setResizable(false);     //(False) N'autorise pas la modification de la taille de la fenêtre 
-		frame1.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-		
-		//Crée un nouveau Panel
-		JPanel panel1 = new JPanel(new FlowLayout());
-		JPanel panel2 = new JPanel(new FlowLayout());
-		
-		//Crée un nouveau button
-		JButton commencer = new JButton("Commencer la bataille");
-		JButton multijoueur = new JButton("Multijoueur");
-		JButton ordinateur = new JButton("Ordinateur");
-		
-		
-		//Crée de nouveaux Label et les configure
-		JLabel label1 = new JLabel("Nom du premier joueur : ");
-		JLabel label2 = new JLabel("Nom du deuxieme joueur : ");
-		JLabel label3 = new JLabel("Veuillez choisir votre mode de jeu");
-		JLabel label4 = new JLabel("Veuillez choisir votre nom");
-		JTextField textField1 = new JTextField(12);
-		JTextField textField2 = new JTextField(12);
+		frame1.setResizable(false);     //(False) N'autorise pas la modification de la taille de la fenêtre 	
+			
 		textField1.setBounds(10, 200, 100, 10);
 		textField2.setSize(label2.getPreferredSize());
 		label1.setSize(label2.getPreferredSize());
 		commencer.setBounds(100, 500, 50, 50);
 		label2.setSize(label2.getPreferredSize());
 		
-		//Insertion d'une image à partir de son URL
-		String image= "/Users/aminemr/Pictures/bataillenavale.png" ;
-		ImageIcon battle = new ImageIcon(image);
-		JLabel label5 = new JLabel(battle, JLabel.CENTER);
-
-	 
-		
-		//Crée deux variables pour stocker le nom des Joueurs
-		String nameJ1 = "a" ;
-		String nameJ2 = "b" ;
-		
 		//Action de la souris sur le bouton "Multijoueur"
 		multijoueur.addActionListener(new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent evt){
+				contreOrdi = false;
 				multijoueur.setVisible(false);
 				ordinateur.setVisible(false);
 				label3.setVisible(false);
@@ -78,33 +74,23 @@ public class Main{
 				panel1.add(textField1);
 				panel1.add(label2);
 				panel1.add(textField2);
-				String nameJ1 = textField1.getText(); 			//Stocke le nom entré par les joueurs
-				String nameJ2 = textField2.getText();
-				if(nameJ1.isEmpty()){
-					nameJ1 = "Joueur 1";        				//Remplace le nom de Joueur1 par "Joueur 1"
-				}
-				if(nameJ2.isEmpty()){							//Remplace le nom de Joueur2 par "Joueur 2"
-					nameJ2 = "Joueur 2";
-				}
 				panel1.add(commencer);
 			}
+			
 		});
-		
+
 		//Action de la souris sur le bouton "Ordinateur"
 		ordinateur.addActionListener(new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent evt){
+				contreOrdi = true;
 				multijoueur.setVisible(false);
 				ordinateur.setVisible(false);
 				label3.setVisible(false);
 				label4.setVisible(true);
 				panel1.add(label1);
 				panel1.add(textField1);
-				String nameJ1 = textField1.getText(); 			//Stocke le nom entré par les joueurs
-				String nameJ2 = "Ordinateur";
-				if(nameJ1.isEmpty()){
-					nameJ1 = "Joueur 1";        				//Remplace le nom de Joueur1 par "Joueur 1"
-				}
+				
 				panel1.add(commencer);
 			}
 		});
@@ -113,7 +99,20 @@ public class Main{
 		commencer.addActionListener(new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent evt){
-				GameBoard start = new GameBoard(nameJ1, nameJ2);			//Le jeu débute
+				String nameJ1 = textField1.getText(); 			//Stocke le nom entré par les joueurs
+				if(nameJ1.isEmpty()){
+					nameJ1 = "Joueur 1";        				//Remplace le nom de Joueur1 par "Joueur 1"
+				}
+				if(contreOrdi){
+					nameJ2 = "ordi";
+				}else{
+					nameJ2 = textField2.getText();
+					if(nameJ2.isEmpty()){							//Remplace le nom de Joueur2 par "Joueur 2"
+						nameJ2 = "Joueur 2";
+					}
+				}
+				sonBataille.arreteSon();
+				GameBoard start = new GameBoard(nameJ1, nameJ2, contreOrdi);			//Le jeu débute
 				frame1.dispose();	
 			}
 		});

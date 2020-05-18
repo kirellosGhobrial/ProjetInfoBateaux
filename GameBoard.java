@@ -10,6 +10,7 @@ public class GameBoard extends JFrame{
 	Joueur j2 = new Joueur(10, 10, "Joueur 2");
 	Joueur jTemp1;
 	Joueur jTemp2;
+	int tailleEcranX, tailleEcranY;
 	int intTemp;
 	int nomAttaque =1;
 	int jou = 1;
@@ -19,16 +20,19 @@ public class GameBoard extends JFrame{
 	int largeur=10;
 	int coordX = 0;
 	int coordY = 0;
+	boolean ordi ;
 	JFrame mainFrame = new JFrame();
 	JLabel lblTop = new JLabel("Bataille navire");
 	JLabel lbl1 = new JLabel();
 	JLabel lbl2 = new JLabel("Appuyer sur 'bateau' pour commencer");
 	JPanel top = new JPanel();
+	GridBagConstraints Cons = new GridBagConstraints();
 	JPanel centre = new JPanel(new BorderLayout());
 	JPanel map1 = new JPanel(new GridLayout(longueur,largeur,5,5));
 	JLabel[][] area1 = new JLabel[longueur][largeur];
 	int[][] area1Int = new int[longueur][largeur];
 	int[][] area2Int = new int[longueur][largeur];
+	int[][] carteOrdi = new int[longueur][largeur];
 	int[] coor = new int[2];
 	JPanel map2 = new JPanel(new GridLayout(longueur,largeur,5,5));
 	JLabel[][] area2 = new JLabel[longueur][largeur];
@@ -38,21 +42,30 @@ public class GameBoard extends JFrame{
 	JButton buttonMusique = new JButton("couper le son");
 	boolean allowMouse1 = false;
 	boolean allowMouse2 = false;
+	boolean posAttChoisi = false; 
 	int nbBat = 0;
 	Audio sonBataille = new Audio("BattleshipSong.wav");
 	Audio explosion = new Audio("Explosion.wav");
 	Audio tombeDansLeau = new Audio("tombeDansLeau.wav");
 		
 		
-	public GameBoard(String name1, String name2){
+	public GameBoard(String name1, String name2, boolean mode){
 		//set frame
 		sonBataille.changeSon();
 		j1.nomJoueur = name1;
 		j2.nomJoueur = name2;
 		mainFrame.setLayout(new BorderLayout());
 		mainFrame.setTitle("BATAILLE NAVALE");
-		mainFrame.setSize(1300,700);
-		
+		Dimension tailleEcran = Toolkit.getDefaultToolkit().getScreenSize();
+		tailleEcranX = tailleEcran.width-50;
+		tailleEcranY = tailleEcran.height-50;
+		int tailleGrilleX = tailleEcranX /(3*largeur);
+		int tailleGrilleY = (tailleEcranY- 100) / longueur ;
+		System.out.println(tailleEcranX + " " + tailleEcranY);
+		System.out.println(tailleGrilleX + " " + tailleGrilleY);
+		mainFrame.setSize(tailleEcranX, tailleEcranY);
+		mainFrame.setResizable(false);
+		ordi = mode;
 		//maps
 		//map1
 		for(int i=0; i<area1.length; i++){
@@ -62,7 +75,9 @@ public class GameBoard extends JFrame{
 				area1[i][j].setOpaque(true);
 				area1[i][j].setBackground(Color.WHITE);
 				map1.add(area1[i][j]);
-				area1[i][j].setPreferredSize(new Dimension(50, 20));
+				area1[i][j].setMaximumSize(new Dimension(tailleGrilleX, tailleGrilleY));
+				area1[i][j].setMinimumSize(new Dimension(tailleGrilleX, tailleGrilleY));
+				area1[i][j].setPreferredSize(new Dimension(tailleGrilleX, tailleGrilleY));
 			}
 		}
 		//map2
@@ -75,7 +90,9 @@ public class GameBoard extends JFrame{
 				map2.add(area2[i][j]);
 				area2[i][j].setOpaque(true);
 				area2[i][j].setBackground(Color.WHITE);
-				area2[i][j].setPreferredSize(new Dimension(50, 20));
+				area2[i][j].setMaximumSize(new Dimension(tailleGrilleX, tailleGrilleY));
+				area2[i][j].setMinimumSize(new Dimension(tailleGrilleX, tailleGrilleY));
+				area2[i][j].setPreferredSize(new Dimension(tailleGrilleX, tailleGrilleY));
 			}
 		}
 		
@@ -85,9 +102,14 @@ public class GameBoard extends JFrame{
 		map2.setSize(100,100);
 		
 		//top
-		top.setSize(100,50);	
+		mainFrame.add(top, BorderLayout.NORTH);
+		top.setLayout(null);
+		top.setPreferredSize(new Dimension(0,30));
+		lblTop.setBounds(tailleEcranX/2, 0, 200,30);
 		top.add(lblTop);
+		buttonMusique.setBounds(tailleEcranX-205, 0, 200,30);
 		top.add(buttonMusique);
+		top.setSize(100,100);
 		
 		//centre
 		Border border = BorderFactory.createLineBorder(Color.BLUE, 5);
@@ -102,35 +124,46 @@ public class GameBoard extends JFrame{
 		attaque.addActionListener(new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent evt){
-				if(jou==1){
-					System.out.println("attaque numero " + nomAttaque);
-					System.out.println("attaque faite a Y: " + coordY+ " X: " + coordX);
-					attaqueJou(coordY, coordX, 1);
-					System.out.println("tableau d'attaques de "+j1.nomJoueur);
-					j1.imprim(j1.tabEn);
-					intTemp = j2.nomBatCoul();
-					System.out.println("nombre de bateaux coules : "+intTemp);
-					if(intTemp ==5){
-						jeuTermine(j1);
+				if(posAttChoisi){
+					if(jou==1){
+						System.out.println("attaque numero " + nomAttaque);
+						System.out.println("attaque faite a Y: " + coordY+ " X: " + coordX);
+						attaqueJou(coordY, coordX, 1);
+						System.out.println("tableau d'attaques de "+j1.nomJoueur);
+						j1.imprim(j1.tabEn);
+						intTemp = j2.nomBatCoul();
+						System.out.println("nombre de bateaux coules : "+intTemp);
+						System.out.println();
+						System.out.println();
+						if(intTemp ==5){
+							jeuTermine(j1);
+						}
+						refreshMap1(j2.tabBat);
+						refreshMap2(j2.tabEn);
+						jou =2;
+						if(ordi){
+							ordiAttaque();
+						}
+					}else{
+						System.out.println("attaque numero " + nomAttaque);
+						System.out.println("attaque faite a Y: " + coordY+ " X: " + coordX);
+						attaqueJou(coordY, coordX, 2);
+						System.out.println("tableau d'attaques de "+j2.nomJoueur);
+						j2.imprim(j2.tabEn);
+						intTemp = j1.nomBatCoul();
+						System.out.println("nombre de bateaux coules : "+intTemp);
+						System.out.println();
+						System.out.println();
+						if(intTemp ==5){
+							jeuTermine(j2);
+						}
+						refreshMap1(j1.tabBat);
+						refreshMap2(j1.tabEn);
+						jou=1;
+						nomAttaque++;
+					
 					}
-					refreshMap1(j2.tabBat);
-					refreshMap2(j2.tabEn);
-					jou =2;
-				}else{
-					System.out.println("attaque numero " + nomAttaque);
-					System.out.println("attaque faite a Y: " + coordY+ " X: " + coordX);
-					attaqueJou(coordY, coordX, 2);
-					System.out.println("tableau d'attaques de "+j2.nomJoueur);
-					j2.imprim(j2.tabEn);
-					intTemp = j1.nomBatCoul();
-					System.out.println("nombre de bateaux coules : "+intTemp);
-					if(intTemp ==5){
-						jeuTermine(j2);
-					}
-					refreshMap1(j1.tabBat);
-					refreshMap2(j1.tabEn);
-					jou=1;
-					nomAttaque++;
+					posAttChoisi = false;
 				}
 			}
 		});
@@ -177,7 +210,6 @@ public class GameBoard extends JFrame{
 		//add , visible
 		mainFrame.add(map1, BorderLayout.EAST);
 		mainFrame.add(map2, BorderLayout.WEST);
-		mainFrame.add(top, BorderLayout.NORTH);
 		mainFrame.add(buttons, BorderLayout.SOUTH);
 		mainFrame.add(centre, BorderLayout.CENTER);
 		mainFrame.setLocationRelativeTo(null);
@@ -386,6 +418,7 @@ public class GameBoard extends JFrame{
 					area2Int[coor[0]][coor[1]] = 3;
 					coordX = coor[1];
 					coordY = coor[0];
+					posAttChoisi = true;
 					attaque.requestFocus();
 				}
 			}
@@ -421,6 +454,9 @@ public class GameBoard extends JFrame{
 					case 2 : 
 						area1[i][j].setBackground(Color.RED);
 						break;
+					case 4 :
+						area1[i][j].setBackground(Color.YELLOW);
+					
 					default:
 						break;
 				}
@@ -445,12 +481,38 @@ public class GameBoard extends JFrame{
 						break;
 					case 3 :
 						area2[i][j].setBackground(Color.ORANGE);
-						
+						break;
+					case 4 :
+						area2[i][j].setBackground(Color.YELLOW);
 					default:
 						break;
 				}
 			}
 		}
+	}
+ 
+	public void refreshCarteOrdi(){
+		mapIntClear(carteOrdi);
+		for(int y = 0; y<j2.tabEn.length; y++){
+			for(int x = 0; x<j2.tabEn[0].length; x++){
+				if(j2.tabEn[y][x] == 2){
+					for (int i = 0; i < carteOrdi.length; ++i) {
+						for (int j = 0; j < carteOrdi[0].length; ++j) {
+							if(j2.tabEn[i][j]==0){
+								if( (Math.abs(y-i) < 3 && x==j) || (Math.abs(x-j) < 3 && y==i) ){
+									if(Math.abs(y-i) == 1 || Math.abs(x-j) == 1){
+										carteOrdi[i][j] = carteOrdi[i][j] +2;
+									}else{
+										carteOrdi[i][j]++;
+									}
+								} 
+							}
+						}
+					}
+				}
+			}
+		}	
+		
 	}
  
 	public void mapClear(JLabel[][] map){
@@ -520,7 +582,11 @@ public class GameBoard extends JFrame{
 				mapIntClear(area1Int);
 				batLen = 5;
 				lbl2.setText(joueur.nomJoueur + " placer le premier bateau, c'est un porte-avion de taille 5");
-				
+				if(ordi){
+					nbBat = 1;
+					ordiPlacerBateau();
+				}
+				System.out.println("changement de joueur");
 				break;
 			default :
 				break;
@@ -541,17 +607,45 @@ public class GameBoard extends JFrame{
 		}
 		System.out.println("attaque de "+jTemp1.nomJoueur);	
 		switch(jTemp2.tabBat[y][x]){
-			case 0 :
+			case 0:
 				lbl1.setText("attaque ratee");
 				jTemp1.tabEn[y][x] =  1;
 				tombeDansLeau.mettreSon();
+				if(ordi && jou ==2){
+					carteOrdi[y][x] = 0;
+				}
 				break;
 			case 1:
 				lbl1.setText("attaque reussiee");
 				jTemp1.tabEn[y][x] = 2;
 				jTemp2.tabBat[y][x] = 2;
-				jTemp2.attaqueBat(y,x);
+				Bateau batTemp = jTemp2.attaqueBat(y,x);
 				explosion.mettreSon();
+				if(batTemp.estCoule()){
+					for(int n=0; n<batTemp.posBat.length; n++){
+						jTemp2.tabBat[batTemp.posBat[n][0]][batTemp.posBat[n][1]] = 4; 
+						jTemp1.tabEn[batTemp.posBat[n][0]][batTemp.posBat[n][1]] = 4; 
+					}
+					refreshCarteOrdi();
+					System.out.println("carte ordi mise a jour");
+				}else if(ordi && jou ==2){
+					for (int i = 0; i < carteOrdi.length; ++i) {
+						for (int j = 0; j < carteOrdi[0].length; ++j) {
+							if(j2.tabEn[i][j]==0){
+								if( (Math.abs(y-i) < 3 && x==j) || (Math.abs(x-j) < 3 && y==i) ){
+									if(Math.abs(y-i) == 1 || Math.abs(x-j) == 1){
+										carteOrdi[i][j] = carteOrdi[i][j] +2;
+									}else{
+										carteOrdi[i][j]++;
+									}
+								} 
+							}
+						}
+					}	
+					carteOrdi[y][x] = 0;
+				}
+				
+			
 				break;
 			default:
 				break;		
@@ -569,6 +663,96 @@ public class GameBoard extends JFrame{
 		frameFini.setLocationRelativeTo(null);
 		frameFini.setVisible(true);
 		mainFrame.dispose();
+	}
+	
+	public void ordiPlacerBateau(){
+		for(int n=0; n<5; n++){
+			System.out.println("bateau "+ (n+1) + " mis pour l'ordi");
+			loop1:
+			while(true){
+				batDir = (int) ( Math.random() * 2 + 1 );
+				coor[0] = (int) ( Math.random() * largeur );
+				coor[1] = (int) ( Math.random() * longueur );
+				if(batDir == 1){
+					for(int i = coor[0]; i<coor[0]+batLen; i++){
+						if(i>=area1.length){
+							continue loop1;
+						}
+						if(area1Int[i][coor[1]] == 1){
+							continue loop1;
+						}
+					}
+					for(int i = coor[0]; i<coor[0]+batLen; i++){
+						if(i<area1.length && area1Int[i][coor[1]] == 0){
+							//area1[i][coor[1]].setBackground(Color.GRAY);
+							area1Int[i][coor[1]] = 1;
+						}
+					}
+				}else{
+					for(int i = coor[1]; i<coor[1]+batLen; i++){
+						if(i>=area1.length){
+							continue loop1;
+						}
+						if(area1Int[coor[0]][i] == 1){
+							continue loop1;
+						}
+					}
+					for(int i = coor[1]; i<coor[1]+batLen; i++){
+						if(i<area1.length && area1Int[coor[0]][i] == 0){
+							//area1[coor[0]][i].setBackground(Color.GRAY);
+							area1Int[coor[0]][i] = 1;
+						}
+					}
+				}
+				placerBateau(j2);
+				break loop1;
+			}
+		}	
+		System.out.println("ana gamed gedan");	
+	}
+	
+	public void ordiAttaque(){
+		int grandeVal = 0;
+		for(int i=0; i<carteOrdi.length; i++){
+			for(int j=0; j<carteOrdi[0].length; j++){
+				if(carteOrdi[i][j]>grandeVal){
+					grandeVal = carteOrdi[i][j];
+					coordX = j;
+					coordY = i;
+				}
+			}
+		}
+		
+		if(grandeVal == 0){
+			while(true){
+				coor[0] = (int) ( Math.random() * largeur );
+				coor[1] = (int) ( Math.random() * longueur );
+				if(area2Int[coor[0]][coor[1]] == 0){
+					area2Int[coor[0]][coor[1]] = 3;
+					coordX = coor[1];
+					coordY = coor[0];
+					attaque.requestFocus();
+					break;
+				}
+			}
+		}
+		System.out.println("la grande valeur est "+grandeVal);
+		System.out.println("attaque numero " + nomAttaque + " pour " + j2.nomJoueur);
+		System.out.println("attaque faite a Y: " + coordY+ " X: " + coordX);
+		attaqueJou(coordY, coordX, 2);
+		System.out.println("tableau d'attaques de "+j2.nomJoueur);
+		j2.imprim(j2.tabEn);
+		intTemp = j1.nomBatCoul();
+		System.out.println("nombre de bateaux coules : "+intTemp);
+		System.out.println();
+		System.out.println();
+		if(intTemp ==5){
+			jeuTermine(j2);
+		}
+		refreshMap1(j1.tabBat);
+		refreshMap2(j1.tabEn);
+		jou=1;
+		nomAttaque++;
 	}
 
 }

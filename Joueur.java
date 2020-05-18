@@ -1,7 +1,6 @@
 public class Joueur{
 	
 	int[][] tabBat;
-	int[][] numBat;
 	int[][] tabEn;
 	String nomJoueur = "Joueur ";
 	Bateau[] listBat = new Bateau[5];
@@ -27,8 +26,7 @@ public class Joueur{
 		c++;
 	}
 	
-	public void attaqueBat(int y, int x){
-		int[] tempTab = {y,x};
+	public Bateau attaqueBat(int y, int x){
 		for(int i = 0; i<listBat.length; i++){
 			for(int j = 0; j<listBat[i].posBat.length; j++){
 				if(listBat[i].posBat[j][0] == y && listBat[i].posBat[j][1] == x){
@@ -37,11 +35,12 @@ public class Joueur{
 									);
 					listBat[i].posTouche[j] = true;
 					System.out.println(listBat[i].posTouche[j]);
-					return;
+					return listBat[i];
 				}
 			}
 		}
 		System.out.println("attaque non faite ");
+		return null;
 	}
 	
 	public void effacerTabBat(){
@@ -59,11 +58,9 @@ public class Joueur{
 		for(int i=0; i<tab.length; i++){
 			for(int j=0; j<tab.length; j++){
 				System.out.print(tab[i][j] + " ");
-				//System.out.print(i+""+ j+ " ");
 			}
 			System.out.println();
 		}
-		System.out.println();
 	}
 	
 	public int nomBatCoul(){

@@ -38,4 +38,11 @@ public class  Audio{
 			estSon = true;
 		}
 	}	
+	
+	public void arreteSon(){
+		try{
+			clip.stop();
+		}catch(Exception ex){}
+		estSon = false;		
+	}
 }

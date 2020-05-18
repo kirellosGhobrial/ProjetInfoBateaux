@@ -40,13 +40,13 @@ public class Bateau {
 				posBat[i][1] = x ;
 			}
 		}else if(orient == 2){
-			orientStr ="vertical";
+			orientStr ="horizontal";
 			for(int i = 0; i<tailleBateau; i++){
 				posBat[i][0] = y;
 				posBat[i][1] = x +i;
 			}
 		}
-		System.out.println(orientStr+ " ok");
+		System.out.println(orientStr+ "");
     }
     
     public boolean estCoule(){
@@ -56,17 +56,14 @@ public class Bateau {
                 a++;
 			}
         }
-        if(a==this.tailleBateau){
-			coule = "le bateau est coule";
-		}
-		return a == this.tailleBateau;
+		return a==this.tailleBateau;
 	}
 	
-	 public String toString() {
+	public String toString() {
         String description = "Le bateau est un " + this.nomBateau 
                              + " orienté " + this.orientStr 
                              + " avec pour coordonnées " +coordonneesBateauX +","+coordonneesBateauY
-                             + " de taille " + this.tailleBateau + " "+coule ;
+                             + " de taille " + this.tailleBateau;
         return description;
     }
 }
