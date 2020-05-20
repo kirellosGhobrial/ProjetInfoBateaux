@@ -16,13 +16,16 @@ public class Main{
 	JLabel label4 = new JLabel("Veuillez choisir votre nom");
 	JTextField textField1 = new JTextField(12);
 	JTextField textField2 = new JTextField(12);
-	JButton buttonMusique = new JButton("Couper le son");
+	
 	Audio sonBataille = new Audio("BattleshipSong.wav");
 	JButton commencer = new JButton("Commencer la bataille");
 	JButton multijoueur = new JButton("Multijoueur");
 	JButton ordinateur = new JButton("Ordinateur");
-	String image= "/Users/aminemr/Pictures/bataillenavale.png" ; //Insertion d'une image à partir de son URL
+	String image= "batailleNavale.png" ; //Insertion d'une image à partir de son URL
 	ImageIcon battle = new ImageIcon(image);
+	ImageIcon musiqueOn = new ImageIcon(new ImageIcon("musicOn.png").getImage().getScaledInstance(20, 20, Image.SCALE_DEFAULT));
+	ImageIcon mute = new ImageIcon(new ImageIcon("mute.png").getImage().getScaledInstance(20, 20, Image.SCALE_DEFAULT));
+	JButton buttonMusique = new JButton(musiqueOn);
 	JLabel label5 = new JLabel(battle, JLabel.CENTER);
 	
 	//Crée deux variables pour stocker le nom des Joueurs
@@ -31,7 +34,6 @@ public class Main{
 	
 	public static void main(String[] args){
 		new Main();
-
 	}
 	
 	public Main(){
@@ -44,9 +46,9 @@ public class Main{
 			public void actionPerformed(ActionEvent evt){
 				sonBataille.changeSon();
 				if(sonBataille.estSon){
-					JButton button2 = new JButton("Couper le son");
+					buttonMusique.setIcon(musiqueOn);
 				}else{
-					JButton button2 = new JButton("Mettre le son");
+					buttonMusique.setIcon(mute);
 				}
 			}
 		});
@@ -112,7 +114,7 @@ public class Main{
 					}
 				}
 				sonBataille.arreteSon();
-				GameBoard start = new GameBoard(nameJ1, nameJ2, contreOrdi);			//Le jeu débute
+				GameBoard start = new GameBoard(nameJ1, nameJ2, contreOrdi); //Le jeu débute
 				frame1.dispose();	
 			}
 		});

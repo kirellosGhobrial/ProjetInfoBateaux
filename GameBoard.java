@@ -14,7 +14,7 @@ public class GameBoard extends JFrame{
 	int intTemp;
 	int nomAttaque =1;
 	int jou = 1;
-	int batLen = 3;
+	int batLon = 3;
 	int batDir = 2;
 	int longueur=10 ;
 	int largeur=10;
@@ -39,7 +39,9 @@ public class GameBoard extends JFrame{
 	JPanel buttons = new JPanel(new FlowLayout());
 	JButton btnBateau = new JButton("bateau");
 	JButton attaque = new JButton("attaque");
-	JButton buttonMusique = new JButton("couper le son");
+	ImageIcon musiqueOn = new ImageIcon(new ImageIcon("musicOn.png").getImage().getScaledInstance(20, 20, Image.SCALE_DEFAULT));
+	ImageIcon mute = new ImageIcon(new ImageIcon("mute.png").getImage().getScaledInstance(20, 20, Image.SCALE_DEFAULT));
+	JButton buttonMusique = new JButton(musiqueOn);
 	boolean allowMouse1 = false;
 	boolean allowMouse2 = false;
 	boolean posAttChoisi = false; 
@@ -59,21 +61,22 @@ public class GameBoard extends JFrame{
 		Dimension tailleEcran = Toolkit.getDefaultToolkit().getScreenSize();
 		tailleEcranX = tailleEcran.width-50;
 		tailleEcranY = tailleEcran.height-50;
-		int tailleGrilleX = tailleEcranX /(3*largeur);
-		int tailleGrilleY = (tailleEcranY- 100) / longueur ;
-		System.out.println(tailleEcranX + " " + tailleEcranY);
-		System.out.println(tailleGrilleX + " " + tailleGrilleY);
 		mainFrame.setSize(tailleEcranX, tailleEcranY);
 		mainFrame.setResizable(false);
 		ordi = mode;
+		
 		//maps
+		mainFrame.add(map1, BorderLayout.EAST);
+		mainFrame.add(map2, BorderLayout.WEST);
+		int tailleGrilleX = tailleEcranX /(3*largeur);
+		int tailleGrilleY = (tailleEcranY- 40) / longueur ;
 		//map1
 		for(int i=0; i<area1.length; i++){
 			for(int j =0; j<area1[0].length; j++){
 				area1[i][j] = new JLabel();
 				area1[i][j].addMouseListener(new mouseMvtMap1());
 				area1[i][j].setOpaque(true);
-				area1[i][j].setBackground(Color.WHITE);
+				area1[i][j].setBackground(Color.CYAN);
 				map1.add(area1[i][j]);
 				area1[i][j].setMaximumSize(new Dimension(tailleGrilleX, tailleGrilleY));
 				area1[i][j].setMinimumSize(new Dimension(tailleGrilleX, tailleGrilleY));
@@ -89,43 +92,44 @@ public class GameBoard extends JFrame{
 				area2[i][j].addMouseListener(new mouseMvtMap2());
 				map2.add(area2[i][j]);
 				area2[i][j].setOpaque(true);
-				area2[i][j].setBackground(Color.WHITE);
+				area2[i][j].setBackground(Color.CYAN);
 				area2[i][j].setMaximumSize(new Dimension(tailleGrilleX, tailleGrilleY));
 				area2[i][j].setMinimumSize(new Dimension(tailleGrilleX, tailleGrilleY));
 				area2[i][j].setPreferredSize(new Dimension(tailleGrilleX, tailleGrilleY));
 			}
 		}
+		map1.setBackground(Color.BLACK);
+		map2.setBackground(Color.BLACK);
 		
-		map1.setBackground(Color.CYAN);
-		map2.setBackground(Color.CYAN);
-		map1.setSize(100,100);
-		map2.setSize(100,100);
+
 		
 		//top
 		mainFrame.add(top, BorderLayout.NORTH);
 		top.setLayout(null);
 		top.setPreferredSize(new Dimension(0,30));
-		lblTop.setBounds(tailleEcranX/2, 0, 200,30);
+		lblTop.setSize(lblTop.getPreferredSize());
+		lblTop.setBounds( (tailleEcranX/2) - (lblTop.getWidth()/2) , 0, 200,30);
 		top.add(lblTop);
-		buttonMusique.setBounds(tailleEcranX-205, 0, 200,30);
+		buttonMusique.setBounds((int) (tailleEcranX*0.8)-5 , 0, (int) (tailleEcranX*0.2),30);
 		top.add(buttonMusique);
-		top.setSize(100,100);
 		
 		//centre
-		Border border = BorderFactory.createLineBorder(Color.BLUE, 5);
-        centre.setBorder(border);
-		centre.add(lbl1, BorderLayout.CENTER);
-		centre.add(lbl2, BorderLayout.NORTH);
+		mainFrame.add(centre, BorderLayout.CENTER);
+		centre.setLayout(new FlowLayout());
+		centre.add(btnBateau);
+		//centre.add(attaque);
+		btnBateau.requestFocus();
+		buttonMusique.setFocusable(false);
 		
 		
 		//buttons
-		buttons.setSize(300,50);
 		//attaque
 		attaque.addActionListener(new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent evt){
 				if(posAttChoisi){
 					if(jou==1){
+						allowMouse2 = false;
 						System.out.println("attaque numero " + nomAttaque);
 						System.out.println("attaque faite a Y: " + coordY+ " X: " + coordX);
 						attaqueJou(coordY, coordX, 1);
@@ -138,13 +142,23 @@ public class GameBoard extends JFrame{
 						if(intTemp ==5){
 							jeuTermine(j1);
 						}
-						refreshMap1(j2.tabBat);
-						refreshMap2(j2.tabEn);
-						jou =2;
-						if(ordi){
-							ordiAttaque();
-						}
+						refreshMap2(j1.tabEn);
+						Timer timer = new Timer(2000, new ActionListener(){
+							@Override
+							public void actionPerformed(ActionEvent evt){
+								refreshMap1(j2.tabBat);
+								refreshMap2(j2.tabEn);
+								jou =2;
+								if(ordi){
+									ordiAttaque();
+								}
+								allowMouse2 = true;
+							}
+						});
+						timer.setRepeats(false);
+						timer.start();
 					}else{
+						allowMouse2 = false;
 						System.out.println("attaque numero " + nomAttaque);
 						System.out.println("attaque faite a Y: " + coordY+ " X: " + coordX);
 						attaqueJou(coordY, coordX, 2);
@@ -157,11 +171,19 @@ public class GameBoard extends JFrame{
 						if(intTemp ==5){
 							jeuTermine(j2);
 						}
-						refreshMap1(j1.tabBat);
-						refreshMap2(j1.tabEn);
-						jou=1;
-						nomAttaque++;
-					
+						refreshMap2(j2.tabEn);
+						Timer timer = new Timer(2000, new ActionListener(){
+							@Override
+							public void actionPerformed(ActionEvent evt){
+								refreshMap1(j1.tabBat);
+								refreshMap2(j1.tabEn);
+								jou=1;
+								nomAttaque++;
+								allowMouse2 = true;
+							}
+						});
+						timer.setRepeats(false);
+						timer.start();
 					}
 					posAttChoisi = false;
 				}
@@ -191,27 +213,23 @@ public class GameBoard extends JFrame{
 			}
 		});
 		
-		buttons.add(btnBateau);
-		btnBateau.requestFocus();
-		buttonMusique.setFocusable(false);
+		
 		
 		buttonMusique.addActionListener(new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent evt){
 				sonBataille.changeSon();
 				if(sonBataille.estSon){
-					JButton button2 = new JButton("couper le son");
+					buttonMusique.setIcon(musiqueOn);
 				}else{
-					JButton button2 = new JButton("mettre le son");
+					buttonMusique.setIcon(mute);
 				}
 			}
 		});
 		
 		//add , visible
-		mainFrame.add(map1, BorderLayout.EAST);
-		mainFrame.add(map2, BorderLayout.WEST);
-		mainFrame.add(buttons, BorderLayout.SOUTH);
-		mainFrame.add(centre, BorderLayout.CENTER);
+		
+		
 		mainFrame.setLocationRelativeTo(null);
 		mainFrame.setVisible(true);
 	}
@@ -227,18 +245,18 @@ public class GameBoard extends JFrame{
 				//area1[coor[0]][coor[1]].setText(String.valueOf(area1Int[coor[0]][coor[1]]));
 				//lbl1.setText( coor[0] + " et " + coor[1]);
 				if(batDir == 1){
-					for(int i = coor[0]; i<coor[0]+batLen; i++){
+					for(int i = coor[0]; i<coor[0]+batLon; i++){
 						if(i>=area1.length){
-							lbl1.setText(" pas d'espace ");
+							//lbl1.setText(" pas d'espace ");
 							color = Color.RED;
 							break;
 						}else if(area1Int[i][coor[1]] == 1){
-							lbl1.setText(" il y a un bateau ");						
+							//lbl1.setText(" il y a un bateau ");						
 							color = Color.RED;
 							break;
 						}
 					}
-					for(int i = coor[0]; i<coor[0]+batLen; i++){
+					for(int i = coor[0]; i<coor[0]+batLon; i++){
 						if(i<area1.length){ 
 							if(area1Int[i][coor[1]] == 0){
 								area1[i][coor[1]].setBackground(color);
@@ -246,18 +264,18 @@ public class GameBoard extends JFrame{
 						}
 					}
 				}else{
-					for(int i = coor[1]; i<coor[1]+batLen; i++){
+					for(int i = coor[1]; i<coor[1]+batLon; i++){
 						if(i>=area1.length ){
-							lbl1.setText(" pas d'espace ");
+							//lbl1.setText(" pas d'espace ");
 							color = Color.RED;
 							break;
 						}else if(area1Int[coor[0]][i] == 1){
-							lbl1.setText(" il y a un bateau ");
+							//lbl1.setText(" il y a un bateau ");
 							color = Color.RED;
 							break;
 						}
 					}
-					for(int i = coor[1]; i<coor[1]+batLen; i++){
+					for(int i = coor[1]; i<coor[1]+batLon; i++){
 						if(i<area1.length){
 							if(area1Int[coor[0]][i] == 0){
 								area1[coor[0]][i].setBackground(color);
@@ -274,19 +292,19 @@ public class GameBoard extends JFrame{
 				JLabel square = (JLabel)evt.getSource();
 				coor = trouverIndice(area1, square);
 				if(batDir == 1){
-					for(int i = coor[0]; i<coor[0]+batLen; i++){
+					for(int i = coor[0]; i<coor[0]+batLon; i++){
 						if(i<area1.length && area1Int[i][coor[1]] == 0){
-							area1[i][coor[1]].setBackground(Color.WHITE);
+							area1[i][coor[1]].setBackground(Color.CYAN);
 						}
 					}
 				}else{
-					for(int i = coor[1]; i<coor[1]+batLen; i++){
+					for(int i = coor[1]; i<coor[1]+batLon; i++){
 						if(i<area1.length && area1Int[coor[0]][i] == 0){
-							area1[coor[0]][i].setBackground(Color.WHITE);
+							area1[coor[0]][i].setBackground(Color.CYAN);
 						}
 					}
 				}
-				lbl1.setText("");
+				//lbl1.setText("");
 			}
 		}
 		//mouse clicked
@@ -297,7 +315,7 @@ public class GameBoard extends JFrame{
 				coor = trouverIndice(area1, square);
 				if(evt.getButton() == MouseEvent.BUTTON1){
 					if(batDir == 1){
-						for(int i = coor[0]; i<coor[0]+batLen; i++){
+						for(int i = coor[0]; i<coor[0]+batLon; i++){
 							if(i>=area1.length){
 								return;
 							}
@@ -305,14 +323,14 @@ public class GameBoard extends JFrame{
 								return;
 							}
 						}
-						for(int i = coor[0]; i<coor[0]+batLen; i++){
+						for(int i = coor[0]; i<coor[0]+batLon; i++){
 							if(i<area1.length && area1Int[i][coor[1]] == 0){
-								area1[i][coor[1]].setBackground(Color.GRAY);
+								area1[i][coor[1]].setBackground(Color.LIGHT_GRAY);
 								area1Int[i][coor[1]] = 1;
 							}
 						}
 					}else{
-						for(int i = coor[1]; i<coor[1]+batLen; i++){
+						for(int i = coor[1]; i<coor[1]+batLon; i++){
 							if(i>=area1.length){
 								return;
 							}
@@ -320,9 +338,9 @@ public class GameBoard extends JFrame{
 								return;
 							}
 						}
-						for(int i = coor[1]; i<coor[1]+batLen; i++){
+						for(int i = coor[1]; i<coor[1]+batLon; i++){
 							if(i<area1.length && area1Int[coor[0]][i] == 0){
-								area1[coor[0]][i].setBackground(Color.GRAY);
+								area1[coor[0]][i].setBackground(Color.LIGHT_GRAY);
 								area1Int[coor[0]][i] = 1;
 							}
 						}
@@ -335,15 +353,15 @@ public class GameBoard extends JFrame{
 					}
 				}else if(evt.getButton() == MouseEvent.BUTTON3){
 					if(batDir == 1){
-						for(int i = coor[0]; i<coor[0]+batLen; i++){
+						for(int i = coor[0]; i<coor[0]+batLon; i++){
 							if(i<area1.length && area1Int[i][coor[1]] == 0){
-								area1[i][coor[1]].setBackground(Color.WHITE);
+								area1[i][coor[1]].setBackground(Color.CYAN);
 							}
 						}
 					}else{
-						for(int i = coor[1]; i<coor[1]+batLen; i++){
+						for(int i = coor[1]; i<coor[1]+batLon; i++){
 							if(i<area1.length && area1Int[coor[0]][i] == 0){
-								area1[coor[0]][i].setBackground(Color.WHITE);
+								area1[coor[0]][i].setBackground(Color.CYAN);
 							}
 						}
 					}
@@ -354,19 +372,19 @@ public class GameBoard extends JFrame{
 					}
 					Color color = Color.RED;
 					if(batDir == 1){
-						if(area1.length-coor[0]-batLen >=0){
+						if(area1.length-coor[0]-batLon >=0){
 							color = Color.GREEN;
 						}
-						for(int i = coor[0]; i<coor[0]+batLen; i++){
+						for(int i = coor[0]; i<coor[0]+batLon; i++){
 							if(i<area1.length && area1Int[i][coor[1]] == 0){
 								area1[i][coor[1]].setBackground(color);
 							}
 						}
 					}else{
-						if(area1.length-coor[1]-batLen >=0){
+						if(area1.length-coor[1]-batLon >=0){
 							color = Color.GREEN;
 						}
-						for(int i = coor[1]; i<coor[1]+batLen; i++){
+						for(int i = coor[1]; i<coor[1]+batLon; i++){
 							if(i<area1.length && area1Int[coor[0]][i] == 0){
 								area1[coor[0]][i].setBackground(color);
 								
@@ -388,7 +406,7 @@ public class GameBoard extends JFrame{
 				JLabel square = (JLabel)evt.getSource();
 				coor = trouverIndice(area2, square);
 				if(area2Int[coor[0]][coor[1]] == 0){
-					area2[coor[0]][coor[1]].setBackground(Color.GRAY);
+					area2[coor[0]][coor[1]].setBackground(Color.LIGHT_GRAY);
 				}
 			}
 		}
@@ -399,7 +417,7 @@ public class GameBoard extends JFrame{
 					JLabel square = (JLabel)evt.getSource();
 					int[] coor = trouverIndice(area2, square);
 				if(area2Int[coor[0]][coor[1]] == 0){
-					area2[coor[0]][coor[1]].setBackground(Color.WHITE);
+					area2[coor[0]][coor[1]].setBackground(Color.CYAN);
 				}
 			}
 		}
@@ -410,11 +428,11 @@ public class GameBoard extends JFrame{
 				JLabel square = (JLabel)evt.getSource();
 				coor = trouverIndice(area2, square);
 				if(area2Int[coordY][coordX]==3){
-						area2[coordY][coordX].setBackground(Color.WHITE);
+						area2[coordY][coordX].setBackground(Color.CYAN);
 						area2Int[coordY][coordX] = 0;
 					}
 				if(area2Int[coor[0]][coor[1]] == 0){
-					area2[coor[0]][coor[1]].setBackground(Color.ORANGE);
+					area2[coor[0]][coor[1]].setBackground(Color.GREEN);
 					area2Int[coor[0]][coor[1]] = 3;
 					coordX = coor[1];
 					coordY = coor[0];
@@ -446,17 +464,20 @@ public class GameBoard extends JFrame{
 			for(int j=0; j<tab[0].length; j++){
 				switch(tab[i][j]){
 					case 0 :
-						area1[i][j].setBackground(Color.WHITE);
+						area1[i][j].setBackground(Color.CYAN);
 						break;
 					case 1 :
-						area1[i][j].setBackground(Color.BLACK);
+						area1[i][j].setBackground(Color.GRAY);
 						break;
 					case 2 : 
-						area1[i][j].setBackground(Color.RED);
+						area1[i][j].setBackground(Color.ORANGE);
 						break;
 					case 4 :
-						area1[i][j].setBackground(Color.YELLOW);
-					
+						area1[i][j].setBackground(Color.RED);
+						break;
+					case 5 :
+						area1[i][j].setBackground(Color.BLACK);
+						break;	
 					default:
 						break;
 				}
@@ -468,22 +489,21 @@ public class GameBoard extends JFrame{
 		area2Int = tab;
 		for(int i=0; i<tab.length;i++){
 			for(int j=0; j<tab[0].length; j++){
-				//area2[i][j].setText(tab[i][j]+ "");
 				switch(tab[i][j]){
 					case 0 :
-						area2[i][j].setBackground(Color.WHITE);
+						area2[i][j].setBackground(Color.CYAN);
 						break;
 					case 1 :
 						area2[i][j].setBackground(Color.BLACK);
 						break;
 					case 2 : 
-						area2[i][j].setBackground(Color.RED);
-						break;
-					case 3 :
 						area2[i][j].setBackground(Color.ORANGE);
 						break;
+					case 3 :
+						area2[i][j].setBackground(Color.GREEN);
+						break;
 					case 4 :
-						area2[i][j].setBackground(Color.YELLOW);
+						area2[i][j].setBackground(Color.RED);
 					default:
 						break;
 				}
@@ -518,7 +538,7 @@ public class GameBoard extends JFrame{
 	public void mapClear(JLabel[][] map){
 		for(int i=0; i<map.length;i++){
 			for(int j=0; j<map[0].length; j++){
-				map[i][j].setBackground(Color.WHITE);
+				map[i][j].setBackground(Color.CYAN);
 			}
 		}
 	}
@@ -534,45 +554,48 @@ public class GameBoard extends JFrame{
 	public void placerBateau(Joueur joueur){
 		switch(nbBat){
 			case 0: 
-				lbl2.setText(joueur.nomJoueur + " placer le premier bateau, c'est un porte-avion de taille 5");
-				batLen = 5;
+				//lbl2.setText(joueur.nomJoueur + " placer le premier bateau, c'est un porte-avion de taille 5");
+				batLon = 5;
 				break;
 			case 1:
 				Bateau bat1 = new Bateau(1, batDir, coor[1], coor[0]);
 				joueur.ajouteBateau(bat1);
-				lbl2.setText(joueur.nomJoueur +" placer le deuxieme bateau, c'est un cargo de taille 4");
-				batLen = 4;
+				//lbl2.setText(joueur.nomJoueur +" placer le deuxieme bateau, c'est un cargo de taille 4");
+				batLon = 4;
 				break;
 			case 2:
 				Bateau bat2 = new Bateau(2, batDir, coor[1], coor[0]);
 				joueur.ajouteBateau(bat2);
-				lbl2.setText(joueur.nomJoueur +" placer le troisieme bateau, c'est un voilier de taille 3");
-				batLen = 3;
+				//lbl2.setText(joueur.nomJoueur +" placer le troisieme bateau, c'est un voilier de taille 3");
+				batLon = 3;
 				break;
 			case 3:
 				Bateau bat3 = new Bateau(3, batDir, coor[1], coor[0]);
 				joueur.ajouteBateau(bat3);
-				lbl2.setText(joueur.nomJoueur +" placer le quatrieme bateau, c'est un voilier de taille 3");
-				batLen = 3;
+				//lbl2.setText(joueur.nomJoueur +" placer le quatrieme bateau, c'est un voilier de taille 3");
+				batLon = 3;
 				break;
 			case 4:
 				Bateau bat4 = new Bateau(3, batDir, coor[1], coor[0]);
 				joueur.ajouteBateau(bat4);
-				lbl2.setText(joueur.nomJoueur +" placer le cinquieme bateau, c'est un barque de taille 2");
-				batLen = 2;
+				//lbl2.setText(joueur.nomJoueur +" placer le cinquieme bateau, c'est un barque de taille 2");
+				batLon = 2;
 				break;
 			case 5:
 				Bateau bat5 = new Bateau(4, batDir, coor[1], coor[0]);
 				joueur.ajouteBateau(bat5);
-				lbl1.setText("les bateaux sont mis pour "+ joueur.nomJoueur);
+				//lbl1.setText("les bateaux sont mis pour "+ joueur.nomJoueur);
 				if(jou==2){
-					lbl2.setText("tous les bateaux sont mis ");
+					//lbl2.setText("tous les bateaux sont mis ");
 					allowMouse1 = false;
 					jou = 1;
 					refreshMap1(j1.tabBat);
 					refreshMap2(j1.tabEn);
-					buttons.remove(btnBateau);
-					buttons.add(attaque);
+					centre.remove(btnBateau);
+					centre.add(attaque);
+					mainFrame.invalidate();
+					mainFrame.validate();
+					mainFrame.repaint();
 					allowMouse2 = true;
 					break;
 				}
@@ -580,8 +603,8 @@ public class GameBoard extends JFrame{
 				nbBat = 0;
 				mapClear(area1);
 				mapIntClear(area1Int);
-				batLen = 5;
-				lbl2.setText(joueur.nomJoueur + " placer le premier bateau, c'est un porte-avion de taille 5");
+				batLon = 5;
+				//lbl2.setText(joueur.nomJoueur + " placer le premier bateau, c'est un porte-avion de taille 5");
 				if(ordi){
 					nbBat = 1;
 					ordiPlacerBateau();
@@ -608,15 +631,16 @@ public class GameBoard extends JFrame{
 		System.out.println("attaque de "+jTemp1.nomJoueur);	
 		switch(jTemp2.tabBat[y][x]){
 			case 0:
-				lbl1.setText("attaque ratee");
+				//lbl1.setText("attaque ratee");
 				jTemp1.tabEn[y][x] =  1;
+				jTemp2.tabBat[y][x] = 5;
 				tombeDansLeau.mettreSon();
 				if(ordi && jou ==2){
 					carteOrdi[y][x] = 0;
 				}
 				break;
 			case 1:
-				lbl1.setText("attaque reussiee");
+				//lbl1.setText("attaque reussiee");
 				jTemp1.tabEn[y][x] = 2;
 				jTemp2.tabBat[y][x] = 2;
 				Bateau batTemp = jTemp2.attaqueBat(y,x);
@@ -644,8 +668,6 @@ public class GameBoard extends JFrame{
 					}	
 					carteOrdi[y][x] = 0;
 				}
-				
-			
 				break;
 			default:
 				break;		
@@ -674,7 +696,7 @@ public class GameBoard extends JFrame{
 				coor[0] = (int) ( Math.random() * largeur );
 				coor[1] = (int) ( Math.random() * longueur );
 				if(batDir == 1){
-					for(int i = coor[0]; i<coor[0]+batLen; i++){
+					for(int i = coor[0]; i<coor[0]+batLon; i++){
 						if(i>=area1.length){
 							continue loop1;
 						}
@@ -682,14 +704,13 @@ public class GameBoard extends JFrame{
 							continue loop1;
 						}
 					}
-					for(int i = coor[0]; i<coor[0]+batLen; i++){
+					for(int i = coor[0]; i<coor[0]+batLon; i++){
 						if(i<area1.length && area1Int[i][coor[1]] == 0){
-							//area1[i][coor[1]].setBackground(Color.GRAY);
 							area1Int[i][coor[1]] = 1;
 						}
 					}
 				}else{
-					for(int i = coor[1]; i<coor[1]+batLen; i++){
+					for(int i = coor[1]; i<coor[1]+batLon; i++){
 						if(i>=area1.length){
 							continue loop1;
 						}
@@ -697,9 +718,8 @@ public class GameBoard extends JFrame{
 							continue loop1;
 						}
 					}
-					for(int i = coor[1]; i<coor[1]+batLen; i++){
+					for(int i = coor[1]; i<coor[1]+batLon; i++){
 						if(i<area1.length && area1Int[coor[0]][i] == 0){
-							//area1[coor[0]][i].setBackground(Color.GRAY);
 							area1Int[coor[0]][i] = 1;
 						}
 					}
@@ -708,7 +728,6 @@ public class GameBoard extends JFrame{
 				break loop1;
 			}
 		}	
-		System.out.println("ana gamed gedan");	
 	}
 	
 	public void ordiAttaque(){
