@@ -24,10 +24,7 @@ public class Bateau {
         }else if( nb == 1){
 			this.tailleBateau = 5;
 			this.nomBateau = "porte-avion";
-        }else{
-			System.out.println("le bateau est invalide, veuillez recommencer");	
-		}
-		System.out.println("X "+x + " Y " + y);
+        }
 		this.orientation = orient;
 		this.coordonneesBateauX = x;
 		this.coordonneesBateauY = y;

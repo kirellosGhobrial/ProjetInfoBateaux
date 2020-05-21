@@ -40,6 +40,7 @@ public class GameBoard {
 	JLabel lblCentre2 = new JLabel();
 	JLabel lblCentre3 = new JLabel();
 	JLabel lblCentre4 = new JLabel();
+	JLabel lblCentre5 = new JLabel();	
 	JButton btnBateau = new JButton("commencer");
 	JButton btnAttaque = new JButton("attaque");
 	JButton btnMusique = new JButton();
@@ -51,7 +52,6 @@ public class GameBoard {
 		
 		
 	public GameBoard(String name1, String name2, boolean mode){
-		
 		musiqueBataille.changeSon();
 		j1.nomJoueur = name1;
 		j2.nomJoueur = name2;
@@ -119,7 +119,7 @@ public class GameBoard {
 		//centre
 		mainFrame.add(centre, BorderLayout.CENTER);
 		centre.setLayout(null);
-		Border border = BorderFactory.createLineBorder(Color.BLACK, 5);
+		Border border = BorderFactory.createLineBorder(Color.BLACK, 3);
 		centre.setBorder(border);
 		
 		
@@ -150,13 +150,19 @@ public class GameBoard {
 						Timer timer = new Timer(2000, new ActionListener(){
 							@Override
 							public void actionPerformed(ActionEvent evt){
-								refreshMap1(j2.tabBat);
-								refreshMap2(j2.tabEn);
 								jou =2;
 								if(ordi){
 									ordiAttaque();
+								}else{
+									refreshMap1(j2.tabBat);
+									refreshMap2(j2.tabEn);
+									lblCentre5.setText("");
+									lblCentre1.setForeground(Color.BLACK);
+									lblCentre3.setText("");
+									lblCentre2.setForeground(Color.GREEN);
+									lblCentre4.setText("Attaquez !");
+									allowMouse2 = true;
 								}
-								allowMouse2 = true;
 							}
 						});
 						timer.setRepeats(false);
@@ -185,6 +191,11 @@ public class GameBoard {
 								jou=1;
 								nbAttaque++;
 								allowMouse2 = true;
+								lblCentre5.setText("");
+								lblCentre2.setForeground(Color.BLACK);
+								lblCentre4.setText("");
+								lblCentre1.setForeground(Color.GREEN);								
+								lblCentre3.setText("Attaquez !");
 							}
 						});
 						timer.setRepeats(false);
@@ -241,6 +252,33 @@ public class GameBoard {
 		btnAttaque.setBounds(wd /3, hgt*85/100, wd/3 , hgt*5/100);
 		centre.add(btnBateau);
 		btnBateau.requestFocus();
+		//haut à droite
+		lblCentre1.setBounds(wd*51/100, hgt*15/100, wd*48/100, hgt*10/100);
+		lblCentre1.setText(j1.nomJoueur);
+		lblCentre1.setHorizontalAlignment(JLabel.CENTER);
+		lblCentre1.setFont(new Font("", Font.BOLD, 30));
+		centre.add(lblCentre1);
+		//haut à gauche
+		lblCentre2.setBounds(wd*1/100, hgt*15/100, wd*48/100, hgt*10/100);
+		lblCentre2.setText(j2.nomJoueur);
+		lblCentre2.setHorizontalAlignment(JLabel.CENTER);
+		lblCentre2.setFont(new Font("", Font.BOLD, 30));
+		centre.add(lblCentre2);
+		//en bas à droite
+		lblCentre3.setBounds(wd*51/100, hgt*25/100, wd*48/100, hgt*10/100);
+		lblCentre3.setHorizontalAlignment(SwingConstants.CENTER);
+		lblCentre3.setFont(new Font("", Font.PLAIN, 20));
+		centre.add(lblCentre3);
+		//en bas à gauche
+		lblCentre4.setBounds(wd*1/100, hgt*25/100, wd*48/100, hgt*10/100);
+		lblCentre4.setHorizontalAlignment(SwingConstants.CENTER);
+		lblCentre4.setFont(new Font("", Font.PLAIN, 20));		
+		centre.add(lblCentre4);
+		//au milieu
+		lblCentre5.setBounds(wd/4, hgt*50/100, wd/2 , hgt*10/100);
+		lblCentre5.setHorizontalAlignment(JLabel.CENTER);
+		lblCentre5.setFont(new Font("", Font.BOLD, 20));
+		centre.add(lblCentre5);		
 		
 	}
 
@@ -252,16 +290,14 @@ public class GameBoard {
 				JLabel square = (JLabel)evt.getSource();
 				coor = trouverIndice(area1, square);
 				Color color = Color.GREEN;
-				//area1[coor[0]][coor[1]].setText(String.valueOf(area1Int[coor[0]][coor[1]]));
-				//lbl1.setText( coor[0] + " et " + coor[1]);
 				if(batDir == 1){
 					for(int i = coor[0]; i<coor[0]+batLon; i++){
 						if(i>=area1.length){
-							//lbl1.setText(" pas d'espace ");
+							lblCentre5.setText("<html> pas d'espace </html>");
 							color = Color.RED;
 							break;
 						}else if(area1Int[i][coor[1]] == 1){
-							//lbl1.setText(" il y a un bateau ");						
+							lblCentre5.setText("<html> il y a un bateau </html>");						
 							color = Color.RED;
 							break;
 						}
@@ -276,11 +312,11 @@ public class GameBoard {
 				}else{
 					for(int i = coor[1]; i<coor[1]+batLon; i++){
 						if(i>=area1.length ){
-							//lbl1.setText(" pas d'espace ");
+							lblCentre5.setText("<html> pas d'espace </html>");
 							color = Color.RED;
 							break;
 						}else if(area1Int[coor[0]][i] == 1){
-							//lbl1.setText(" il y a un bateau ");
+							lblCentre5.setText("<html> il y a un bateau </html>");
 							color = Color.RED;
 							break;
 						}
@@ -299,6 +335,7 @@ public class GameBoard {
 		@Override 
 		public void mouseExited(MouseEvent evt){
 			if(allowMouse1){
+				lblCentre5.setText("");
 				JLabel square = (JLabel)evt.getSource();
 				coor = trouverIndice(area1, square);
 				if(batDir == 1){
@@ -314,7 +351,6 @@ public class GameBoard {
 						}
 					}
 				}
-				//lbl1.setText("");
 			}
 		}
 		//mouse clicked
@@ -562,51 +598,63 @@ public class GameBoard {
 	}
 	
 	public void placerBateau(Joueur joueur){
+		String alignCenter = "<html><body style='text-align: center'>";
+		JLabel lbl1 = lblCentre3;
+		JLabel lbl2 = lblCentre4;
+		if(jou==2){
+			lbl1 = lblCentre4;
+			lbl2 = lblCentre3;
+		}
 		switch(numBat){
 			case 0: 
-				//lbl2.setText(joueur.nomJoueur + " placer le premier bateau, c'est un porte-avion de taille 5");
+				lbl1.setText(alignCenter+"Placez le premier bateau, c'est un porte-avion ");
 				batLon = 5;
 				break;
 			case 1:
 				Bateau bat1 = new Bateau(1, batDir, coor[1], coor[0]);
 				joueur.ajouteBateau(bat1);
-				//lbl2.setText(joueur.nomJoueur +" placer le deuxieme bateau, c'est un cargo de taille 4");
+				lbl1.setText(alignCenter+"Placez le deuxieme bateau, c'est un cargo ");
 				batLon = 4;
 				break;
 			case 2:
 				Bateau bat2 = new Bateau(2, batDir, coor[1], coor[0]);
 				joueur.ajouteBateau(bat2);
-				//lbl2.setText(joueur.nomJoueur +" placer le troisieme bateau, c'est un voilier de taille 3");
+				lbl1.setText(alignCenter+"Placez le troisime bateau, c'est un voilier");
 				batLon = 3;
 				break;
 			case 3:
 				Bateau bat3 = new Bateau(3, batDir, coor[1], coor[0]);
 				joueur.ajouteBateau(bat3);
-				//lbl2.setText(joueur.nomJoueur +" placer le quatrieme bateau, c'est un voilier de taille 3");
+				lbl1.setText(alignCenter+"Placez  le quatrieme bateau, c'est un voilier ");
 				batLon = 3;
 				break;
 			case 4:
 				Bateau bat4 = new Bateau(3, batDir, coor[1], coor[0]);
 				joueur.ajouteBateau(bat4);
-				//lbl2.setText(joueur.nomJoueur +" placer le cinquieme bateau, c'est un barque de taille 2");
+				lbl1.setText(alignCenter+"Placez le cinquieme bateau, c'est un barque ");
 				batLon = 2;
 				break;
 			case 5:
 				Bateau bat5 = new Bateau(4, batDir, coor[1], coor[0]);
 				joueur.ajouteBateau(bat5);
-				//lbl1.setText("les bateaux sont mis pour "+ joueur.nomJoueur);
+				lbl1.setText("");
 				if(jou==2){
-					//lbl2.setText("tous les bateaux sont mis ");
+					lblCentre3.setText("");
+					lblCentre4.setText("");
 					allowMouse1 = false;
 					jou = 1;
-					refreshMap1(j1.tabBat);
-					refreshMap2(j1.tabEn);
-					centre.remove(btnBateau);
-					centre.add(btnAttaque);
-					mainFrame.invalidate();
-					mainFrame.validate();
-					mainFrame.repaint();
-					allowMouse2 = true;
+					if(!ordi){
+						lblCentre1.setForeground(Color.GREEN);
+						lblCentre3.setText("Attaquez !");
+						refreshMap1(j1.tabBat);
+						refreshMap2(j1.tabEn);
+						centre.remove(btnBateau);
+						centre.add(btnAttaque);
+						mainFrame.invalidate();
+						mainFrame.validate();
+						mainFrame.repaint();
+						allowMouse2 = true;
+					}
 					break;
 				}
 				jou =2;
@@ -614,10 +662,29 @@ public class GameBoard {
 				mapClear(area1);
 				mapIntClear(area1Int);
 				batLon = 5;
-				//lbl2.setText(joueur.nomJoueur + " placer le premier bateau, c'est un porte-avion de taille 5");
+				lbl2.setText(alignCenter+"Placez le premier bateau, c'est un porte-avion ");
 				if(ordi){
 					numBat = 1;
 					ordiPlacerBateau();
+					lblCentre4.setText(alignCenter+"L'ordinateur est en train, de mettre ses bateaux");
+					Timer timer = new Timer(3000, new ActionListener(){
+						@Override 
+						public void actionPerformed(ActionEvent evt){
+							lblCentre1.setForeground(Color.GREEN);
+							lblCentre3.setText("Attaquez !");
+							refreshMap1(j1.tabBat);
+							refreshMap2(j1.tabEn);
+							centre.remove(btnBateau);
+							centre.add(btnAttaque);
+							mainFrame.invalidate();
+							mainFrame.validate();
+							mainFrame.repaint();
+							lblCentre4.setText("");
+							allowMouse2 = true;
+						}
+					});
+					timer.setRepeats(false);
+					timer.start();
 				}
 				System.out.println("changement de joueur");
 				break;
@@ -630,8 +697,8 @@ public class GameBoard {
 	}
 	
 	public void attaqueJou(int y,int x, int jInt){
-			Joueur jTemp1;
-			Joueur jTemp2;
+		Joueur jTemp1;
+		Joueur jTemp2;
 		System.out.println("Y :" + y +" X :" + x);	
 		if(jInt == 1){
 			jTemp1 = j1;
@@ -643,7 +710,8 @@ public class GameBoard {
 		System.out.println("attaque de "+jTemp1.nomJoueur);	
 		switch(jTemp2.tabBat[y][x]){
 			case 0:
-				//lbl1.setText("attaque ratee");
+				lblCentre5.setText("attaque ratee");
+				lblCentre5.setForeground(Color.RED);
 				jTemp1.tabEn[y][x] =  1;
 				jTemp2.tabBat[y][x] = 5;
 				tombeDansLeau.mettreSon();
@@ -652,7 +720,8 @@ public class GameBoard {
 				}
 				break;
 			case 1:
-				//lbl1.setText("attaque reussiee");
+				lblCentre5.setText("attaque reussiee");
+				lblCentre5.setForeground(Color.GREEN);
 				jTemp1.tabEn[y][x] = 2;
 				jTemp2.tabBat[y][x] = 2;
 				Bateau batTemp = jTemp2.attaqueBat(y,x);
@@ -694,6 +763,9 @@ public class GameBoard {
 		frameFini.setLayout(new BorderLayout());
 		JPanel panelFini = new JPanel(new FlowLayout());
 		JLabel lblfini = new JLabel("BRAVO " +j.nomJoueur+", vous avez gagne");
+		if(j.nomJoueur == "l'ordinateur"){
+			lblfini = new JLabel("GAME OVER, vous avez perdu !!!" +j.nomJoueur);			
+		}
 		panelFini.add(lblfini);
 		frameFini.add(panelFini, BorderLayout.CENTER);
 		frameFini.setLocationRelativeTo(null);
@@ -745,49 +817,71 @@ public class GameBoard {
 	}
 	
 	public void ordiAttaque(){
-		int intTemp;
-		int grandeVal = 0;
-		for(int i=0; i<carteOrdi.length; i++){
-			for(int j=0; j<carteOrdi[0].length; j++){
-				if(carteOrdi[i][j]>grandeVal){
-					grandeVal = carteOrdi[i][j];
-					coordX = j;
-					coordY = i;
+		lblCentre5.setText("");
+		lblCentre1.setForeground(Color.BLACK);
+		lblCentre3.setText("");
+		lblCentre2.setForeground(Color.GREEN);
+		lblCentre4.setText("<html><body style='text-align:center'> L'ordinateur est en train d'attaquer");
+		Timer timer = new Timer(3000, new ActionListener(){
+			@Override 
+			public void actionPerformed(ActionEvent evt){
+				int intTemp;
+				int grandeVal = 0;
+				for(int i=0; i<carteOrdi.length; i++){
+					for(int j=0; j<carteOrdi[0].length; j++){
+						if(carteOrdi[i][j]>grandeVal){
+							grandeVal = carteOrdi[i][j];
+							coordX = j;
+							coordY = i;
+						}
+					}
 				}
-			}
-		}
-		
-		if(grandeVal == 0){
-			while(true){
-				coor[0] = (int) ( Math.random() * largeur );
-				coor[1] = (int) ( Math.random() * longueur );
-				if(area2Int[coor[0]][coor[1]] == 0){
-					area2Int[coor[0]][coor[1]] = 3;
-					coordX = coor[1];
-					coordY = coor[0];
-					btnAttaque.requestFocus();
-					break;
+				if(grandeVal == 0){
+					while(true){
+						coor[0] = (int) ( Math.random() * largeur );
+						coor[1] = (int) ( Math.random() * longueur );
+						if(area2Int[coor[0]][coor[1]] == 0){
+							area2Int[coor[0]][coor[1]] = 3;
+							coordX = coor[1];
+							coordY = coor[0];
+							btnAttaque.requestFocus();
+							break;
+						}
+					}
 				}
+				System.out.println("attaque numero " + nbAttaque + " pour " + j2.nomJoueur);
+				System.out.println("attaque faite a Y: " + coordY+ " X: " + coordX);
+				attaqueJou(coordY, coordX, 2);
+				System.out.println("tableau d'attaques de "+j2.nomJoueur);
+				j2.imprim(j2.tabEn);
+				intTemp = j1.nomBatCoul();
+				System.out.println("nombre de bateaux coules : "+intTemp);
+				System.out.println();
+				System.out.println();
+				refreshMap1(j1.tabBat);
+				Timer timer2 = new Timer(2000, new ActionListener(){
+					@Override
+					public void actionPerformed(ActionEvent evt2){		
+						if(intTemp ==5){
+							jeuTermine(j2);
+							return;
+						}
+						jou=1;
+						nbAttaque++;
+						lblCentre5.setText("");
+						lblCentre2.setForeground(Color.BLACK);
+						lblCentre4.setText("");
+						lblCentre1.setForeground(Color.GREEN);
+						lblCentre3.setText("Attaquez");
+						allowMouse2 = true;
+					}
+				});
+				timer2.setRepeats(false);
+				timer2.start();
 			}
-		}
-		System.out.println("la grande valeur est "+grandeVal);
-		System.out.println("attaque numero " + nbAttaque + " pour " + j2.nomJoueur);
-		System.out.println("attaque faite a Y: " + coordY+ " X: " + coordX);
-		attaqueJou(coordY, coordX, 2);
-		System.out.println("tableau d'attaques de "+j2.nomJoueur);
-		j2.imprim(j2.tabEn);
-		intTemp = j1.nomBatCoul();
-		System.out.println("nombre de bateaux coules : "+intTemp);
-		System.out.println();
-		System.out.println();
-		if(intTemp ==5){
-			jeuTermine(j2);
-			return;
-		}
-		refreshMap1(j1.tabBat);
-		refreshMap2(j1.tabEn);
-		jou=1;
-		nbAttaque++;
+		});
+		timer.setRepeats(false);
+		timer.start();
 	}
 
 }

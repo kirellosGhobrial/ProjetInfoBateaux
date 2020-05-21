@@ -20,9 +20,8 @@ public class Main{
 	JButton commencer = new JButton("Commencer la bataille");
 	JButton multijoueur = new JButton("Multijoueur");
 	JButton ordinateur = new JButton("Ordinateur");
-	String image= "batailleNavale.png" ; //Insertion d'une image à partir de son URL
-	ImageIcon battle = new ImageIcon(image);
-	ImageIcon musiqueOn = new ImageIcon(new ImageIcon("musicOn.png").getImage().getScaledInstance(20, 20, Image.SCALE_DEFAULT));
+	ImageIcon battle = new ImageIcon("batailleNavale.png"); //Insertion d'une image à partir de son URL
+	ImageIcon musiqueOn = new ImageIcon(new ImageIcon("musicOn.png").getImage().getScaledInstance(20, 20, Image.SCALE_DEFAULT)); //changer la taille de l'image pour rentrer dans la bouton
 	ImageIcon mute = new ImageIcon(new ImageIcon("mute.png").getImage().getScaledInstance(20, 20, Image.SCALE_DEFAULT));
 	JButton buttonMusique = new JButton(musiqueOn);
 	JLabel label5 = new JLabel(battle, JLabel.CENTER);
@@ -106,7 +105,7 @@ public class Main{
 					nameJ1 = "Joueur 1";        				//Remplace le nom de Joueur1 par "Joueur 1"
 				}
 				if(contreOrdi){
-					nameJ2 = "ordi";
+					nameJ2 = "L'ordinateur";
 				}else{
 					nameJ2 = textField2.getText();
 					if(nameJ2.isEmpty()){							//Remplace le nom de Joueur2 par "Joueur 2"
