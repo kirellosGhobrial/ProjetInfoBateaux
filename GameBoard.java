@@ -1,18 +1,14 @@
 import java.awt.*;
 import java.awt.event.*;
-import java.awt.event.KeyListener;
 import javax.swing.*;
 import javax.swing.border.Border;
 
-public class GameBoard extends JFrame{
+
+public class GameBoard {
 	
 	Joueur j1 = new Joueur(10, 10, "Joueur 1");
 	Joueur j2 = new Joueur(10, 10, "Joueur 2");
-	Joueur jTemp1;
-	Joueur jTemp2;
-	int tailleEcranX, tailleEcranY;
-	int intTemp;
-	int nomAttaque =1;
+	int nbAttaque =1;
 	int jou = 1;
 	int batLon = 3;
 	int batDir = 2;
@@ -20,42 +16,48 @@ public class GameBoard extends JFrame{
 	int largeur=10;
 	int coordX = 0;
 	int coordY = 0;
-	boolean ordi ;
-	JFrame mainFrame = new JFrame();
-	JLabel lblTop = new JLabel("Bataille navire");
-	JLabel lbl1 = new JLabel();
-	JLabel lbl2 = new JLabel("Appuyer sur 'bateau' pour commencer");
-	JPanel top = new JPanel();
-	GridBagConstraints Cons = new GridBagConstraints();
-	JPanel centre = new JPanel(new BorderLayout());
-	JPanel map1 = new JPanel(new GridLayout(longueur,largeur,5,5));
-	JLabel[][] area1 = new JLabel[longueur][largeur];
+	int tailleEcranX;
+	int tailleEcranY;
+	int[] coor = new int[2];
+	int numBat = 0;
 	int[][] area1Int = new int[longueur][largeur];
 	int[][] area2Int = new int[longueur][largeur];
 	int[][] carteOrdi = new int[longueur][largeur];
-	int[] coor = new int[2];
-	JPanel map2 = new JPanel(new GridLayout(longueur,largeur,5,5));
-	JLabel[][] area2 = new JLabel[longueur][largeur];
-	JPanel buttons = new JPanel(new FlowLayout());
-	JButton btnBateau = new JButton("bateau");
-	JButton attaque = new JButton("attaque");
-	ImageIcon musiqueOn = new ImageIcon(new ImageIcon("musicOn.png").getImage().getScaledInstance(20, 20, Image.SCALE_DEFAULT));
-	ImageIcon mute = new ImageIcon(new ImageIcon("mute.png").getImage().getScaledInstance(20, 20, Image.SCALE_DEFAULT));
-	JButton buttonMusique = new JButton(musiqueOn);
 	boolean allowMouse1 = false;
 	boolean allowMouse2 = false;
 	boolean posAttChoisi = false; 
-	int nbBat = 0;
-	Audio sonBataille = new Audio("BattleshipSong.wav");
+	boolean ordi ;
+	
+	JFrame mainFrame = new JFrame();
+	JPanel top = new JPanel();	
+	JPanel centre = new JPanel(new BorderLayout());
+	JPanel map1 = new JPanel(new GridLayout(longueur,largeur,5,5));
+	JPanel map2 = new JPanel(new GridLayout(longueur,largeur,5,5));
+	JLabel[][] area1 = new JLabel[longueur][largeur];
+	JLabel[][] area2 = new JLabel[longueur][largeur];
+	JLabel lblTop = new JLabel("Bataille Navale");
+	JLabel lblCentre1 = new JLabel();
+	JLabel lblCentre2 = new JLabel();
+	JLabel lblCentre3 = new JLabel();
+	JLabel lblCentre4 = new JLabel();
+	JButton btnBateau = new JButton("commencer");
+	JButton btnAttaque = new JButton("attaque");
+	JButton btnMusique = new JButton();
+	ImageIcon imgMusique  = new ImageIcon(new ImageIcon("musicOn.png").getImage().getScaledInstance(20, 20, Image.SCALE_DEFAULT));
+	ImageIcon imgMute = new ImageIcon(new ImageIcon("mute.png").getImage().getScaledInstance(20, 20, Image.SCALE_DEFAULT));
+	Audio musiqueBataille = new Audio("BattleshipSong.wav");
 	Audio explosion = new Audio("Explosion.wav");
 	Audio tombeDansLeau = new Audio("tombeDansLeau.wav");
 		
 		
 	public GameBoard(String name1, String name2, boolean mode){
-		//set frame
-		sonBataille.changeSon();
+		
+		musiqueBataille.changeSon();
 		j1.nomJoueur = name1;
 		j2.nomJoueur = name2;
+		ordi = mode;
+		
+		//set frame
 		mainFrame.setLayout(new BorderLayout());
 		mainFrame.setTitle("BATAILLE NAVALE");
 		Dimension tailleEcran = Toolkit.getDefaultToolkit().getScreenSize();
@@ -63,7 +65,6 @@ public class GameBoard extends JFrame{
 		tailleEcranY = tailleEcran.height-50;
 		mainFrame.setSize(tailleEcranX, tailleEcranY);
 		mainFrame.setResizable(false);
-		ordi = mode;
 		
 		//maps
 		mainFrame.add(map1, BorderLayout.EAST);
@@ -110,27 +111,29 @@ public class GameBoard extends JFrame{
 		lblTop.setSize(lblTop.getPreferredSize());
 		lblTop.setBounds( (tailleEcranX/2) - (lblTop.getWidth()/2) , 0, 200,30);
 		top.add(lblTop);
-		buttonMusique.setBounds((int) (tailleEcranX*0.8)-5 , 0, (int) (tailleEcranX*0.2),30);
-		top.add(buttonMusique);
+		btnMusique.setBounds((int) (tailleEcranX*0.8)-5 , 0, (int) (tailleEcranX*0.2),30);
+		btnMusique.setIcon(imgMusique);
+		top.add(btnMusique);
+		btnMusique.setFocusable(false);
 		
 		//centre
 		mainFrame.add(centre, BorderLayout.CENTER);
-		centre.setLayout(new FlowLayout());
-		centre.add(btnBateau);
-		//centre.add(attaque);
-		btnBateau.requestFocus();
-		buttonMusique.setFocusable(false);
+		centre.setLayout(null);
+		Border border = BorderFactory.createLineBorder(Color.BLACK, 5);
+		centre.setBorder(border);
+		
 		
 		
 		//buttons
 		//attaque
-		attaque.addActionListener(new ActionListener(){
+		btnAttaque.addActionListener(new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent evt){
+				int intTemp;
 				if(posAttChoisi){
 					if(jou==1){
 						allowMouse2 = false;
-						System.out.println("attaque numero " + nomAttaque);
+						System.out.println("attaque numero " + nbAttaque);
 						System.out.println("attaque faite a Y: " + coordY+ " X: " + coordX);
 						attaqueJou(coordY, coordX, 1);
 						System.out.println("tableau d'attaques de "+j1.nomJoueur);
@@ -141,6 +144,7 @@ public class GameBoard extends JFrame{
 						System.out.println();
 						if(intTemp ==5){
 							jeuTermine(j1);
+							return;
 						}
 						refreshMap2(j1.tabEn);
 						Timer timer = new Timer(2000, new ActionListener(){
@@ -159,7 +163,7 @@ public class GameBoard extends JFrame{
 						timer.start();
 					}else{
 						allowMouse2 = false;
-						System.out.println("attaque numero " + nomAttaque);
+						System.out.println("attaque numero " + nbAttaque);
 						System.out.println("attaque faite a Y: " + coordY+ " X: " + coordX);
 						attaqueJou(coordY, coordX, 2);
 						System.out.println("tableau d'attaques de "+j2.nomJoueur);
@@ -170,6 +174,7 @@ public class GameBoard extends JFrame{
 						System.out.println();
 						if(intTemp ==5){
 							jeuTermine(j2);
+							return;
 						}
 						refreshMap2(j2.tabEn);
 						Timer timer = new Timer(2000, new ActionListener(){
@@ -178,7 +183,7 @@ public class GameBoard extends JFrame{
 								refreshMap1(j1.tabBat);
 								refreshMap2(j1.tabEn);
 								jou=1;
-								nomAttaque++;
+								nbAttaque++;
 								allowMouse2 = true;
 							}
 						});
@@ -194,7 +199,7 @@ public class GameBoard extends JFrame{
 		btnBateau.addActionListener(new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent evt){
-				nbBat=0;
+				numBat=0;
 				mapClear(area1);
 				mapIntClear(area1Int);
 				allowMouse1= true;
@@ -213,25 +218,30 @@ public class GameBoard extends JFrame{
 			}
 		});
 		
-		
-		
-		buttonMusique.addActionListener(new ActionListener(){
+		btnMusique.addActionListener(new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent evt){
-				sonBataille.changeSon();
-				if(sonBataille.estSon){
-					buttonMusique.setIcon(musiqueOn);
+				musiqueBataille.changeSon();
+				if(musiqueBataille.estSon){
+					btnMusique.setIcon(imgMusique);
 				}else{
-					buttonMusique.setIcon(mute);
+					btnMusique.setIcon(imgMute);
 				}
 			}
 		});
 		
 		//add , visible
-		
-		
 		mainFrame.setLocationRelativeTo(null);
 		mainFrame.setVisible(true);
+		System.out.println(centre.getWidth() + "  "+centre.getHeight());
+		
+		int wd = centre.getWidth();
+		int hgt = centre.getHeight();
+		btnBateau.setBounds(wd /3, hgt*85/100, wd/3 , hgt*5/100);
+		btnAttaque.setBounds(wd /3, hgt*85/100, wd/3 , hgt*5/100);
+		centre.add(btnBateau);
+		btnBateau.requestFocus();
+		
 	}
 
 	public class mouseMvtMap1 implements MouseListener{
@@ -437,7 +447,7 @@ public class GameBoard extends JFrame{
 					coordX = coor[1];
 					coordY = coor[0];
 					posAttChoisi = true;
-					attaque.requestFocus();
+					btnAttaque.requestFocus();
 				}
 			}
 		}
@@ -552,7 +562,7 @@ public class GameBoard extends JFrame{
 	}
 	
 	public void placerBateau(Joueur joueur){
-		switch(nbBat){
+		switch(numBat){
 			case 0: 
 				//lbl2.setText(joueur.nomJoueur + " placer le premier bateau, c'est un porte-avion de taille 5");
 				batLon = 5;
@@ -592,7 +602,7 @@ public class GameBoard extends JFrame{
 					refreshMap1(j1.tabBat);
 					refreshMap2(j1.tabEn);
 					centre.remove(btnBateau);
-					centre.add(attaque);
+					centre.add(btnAttaque);
 					mainFrame.invalidate();
 					mainFrame.validate();
 					mainFrame.repaint();
@@ -600,13 +610,13 @@ public class GameBoard extends JFrame{
 					break;
 				}
 				jou =2;
-				nbBat = 0;
+				numBat = 0;
 				mapClear(area1);
 				mapIntClear(area1Int);
 				batLon = 5;
 				//lbl2.setText(joueur.nomJoueur + " placer le premier bateau, c'est un porte-avion de taille 5");
 				if(ordi){
-					nbBat = 1;
+					numBat = 1;
 					ordiPlacerBateau();
 				}
 				System.out.println("changement de joueur");
@@ -614,12 +624,14 @@ public class GameBoard extends JFrame{
 			default :
 				break;
 		}
-		nbBat++;
+		numBat++;
 		System.out.println("tableau de bateaux");
 		joueur.imprim(joueur.tabBat);
 	}
 	
 	public void attaqueJou(int y,int x, int jInt){
+			Joueur jTemp1;
+			Joueur jTemp2;
 		System.out.println("Y :" + y +" X :" + x);	
 		if(jInt == 1){
 			jTemp1 = j1;
@@ -675,8 +687,10 @@ public class GameBoard extends JFrame{
 	} 
 	
 	public void jeuTermine(Joueur j){
+		mainFrame.dispose();
+		musiqueBataille.arreteSon();
 		JFrame frameFini = new JFrame();
-		frameFini.setSize(200,200);
+		frameFini.setSize(300,300);
 		frameFini.setLayout(new BorderLayout());
 		JPanel panelFini = new JPanel(new FlowLayout());
 		JLabel lblfini = new JLabel("BRAVO " +j.nomJoueur+", vous avez gagne");
@@ -684,7 +698,7 @@ public class GameBoard extends JFrame{
 		frameFini.add(panelFini, BorderLayout.CENTER);
 		frameFini.setLocationRelativeTo(null);
 		frameFini.setVisible(true);
-		mainFrame.dispose();
+		
 	}
 	
 	public void ordiPlacerBateau(){
@@ -731,6 +745,7 @@ public class GameBoard extends JFrame{
 	}
 	
 	public void ordiAttaque(){
+		int intTemp;
 		int grandeVal = 0;
 		for(int i=0; i<carteOrdi.length; i++){
 			for(int j=0; j<carteOrdi[0].length; j++){
@@ -750,13 +765,13 @@ public class GameBoard extends JFrame{
 					area2Int[coor[0]][coor[1]] = 3;
 					coordX = coor[1];
 					coordY = coor[0];
-					attaque.requestFocus();
+					btnAttaque.requestFocus();
 					break;
 				}
 			}
 		}
 		System.out.println("la grande valeur est "+grandeVal);
-		System.out.println("attaque numero " + nomAttaque + " pour " + j2.nomJoueur);
+		System.out.println("attaque numero " + nbAttaque + " pour " + j2.nomJoueur);
 		System.out.println("attaque faite a Y: " + coordY+ " X: " + coordX);
 		attaqueJou(coordY, coordX, 2);
 		System.out.println("tableau d'attaques de "+j2.nomJoueur);
@@ -767,11 +782,12 @@ public class GameBoard extends JFrame{
 		System.out.println();
 		if(intTemp ==5){
 			jeuTermine(j2);
+			return;
 		}
 		refreshMap1(j1.tabBat);
 		refreshMap2(j1.tabEn);
 		jou=1;
-		nomAttaque++;
+		nbAttaque++;
 	}
 
 }

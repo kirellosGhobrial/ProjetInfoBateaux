@@ -4,7 +4,6 @@ import javax.swing.*;
 
 public class Main{
 	
-	boolean contreOrdi = false;
 	
 	JFrame frame1 = new JFrame(); 	//Crée une nouvelle fenêtre
 	
@@ -27,6 +26,7 @@ public class Main{
 	ImageIcon mute = new ImageIcon(new ImageIcon("mute.png").getImage().getScaledInstance(20, 20, Image.SCALE_DEFAULT));
 	JButton buttonMusique = new JButton(musiqueOn);
 	JLabel label5 = new JLabel(battle, JLabel.CENTER);
+	boolean contreOrdi = false;
 	
 	//Crée deux variables pour stocker le nom des Joueurs
 	String nameJ1;
