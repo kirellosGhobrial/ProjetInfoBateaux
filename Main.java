@@ -20,8 +20,11 @@ public class Main{
 	JButton commencer = new JButton("Commencer la bataille");
 	JButton multijoueur = new JButton("Multijoueur");
 	JButton ordinateur = new JButton("Ordinateur");
-	ImageIcon battle = new ImageIcon("batailleNavale.png"); //Insertion d'une image à partir de son URL
-	ImageIcon musiqueOn = new ImageIcon(new ImageIcon("musicOn.png").getImage().getScaledInstance(20, 20, Image.SCALE_DEFAULT)); //changer la taille de l'image pour rentrer dans la bouton
+
+	//Insertion d'une image à partir de son URL
+	ImageIcon battle = new ImageIcon("batailleNavale.png"); 
+	// redimensionner l'image pour s'adapter à la taille du bouton
+	ImageIcon musiqueOn = new ImageIcon(new ImageIcon("musicOn.png").getImage().getScaledInstance(20, 20, Image.SCALE_DEFAULT));
 	ImageIcon mute = new ImageIcon(new ImageIcon("mute.png").getImage().getScaledInstance(20, 20, Image.SCALE_DEFAULT));
 	JButton buttonMusique = new JButton(musiqueOn);
 	JLabel label5 = new JLabel(battle, JLabel.CENTER);
@@ -45,7 +48,7 @@ public class Main{
 			public void actionPerformed(ActionEvent evt){
 				sonBataille.changeSon();
 				if(sonBataille.estSon){
-					buttonMusique.setIcon(musiqueOn);
+					buttonMusique.setIcon(musiqueOn);	//Fais un swtich dans l'icône en fonction du son
 				}else{
 					buttonMusique.setIcon(mute);
 				}
@@ -66,10 +69,11 @@ public class Main{
 		multijoueur.addActionListener(new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent evt){
-				contreOrdi = false;
-				multijoueur.setVisible(false);
+				contreOrdi = false;			//Configure un jeu en mode "multijoueur"
+				multijoueur.setVisible(false);		//Cache les boutons 
 				ordinateur.setVisible(false);
 				label3.setVisible(false);
+				//Ajoute le texte et les boutons dans le mode "multijoueur"
 				label4.setVisible(true);
 				panel1.add(label1);
 				panel1.add(textField1);
@@ -100,15 +104,15 @@ public class Main{
 		commencer.addActionListener(new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent evt){
-				String nameJ1 = textField1.getText(); 			//Stocke le nom entré par les joueurs
+				String nameJ1 = textField1.getText(); 		//Stocke le nom entré par les joueurs
 				if(nameJ1.isEmpty()){
-					nameJ1 = "Joueur 1";        				//Remplace le nom de Joueur1 par "Joueur 1"
+					nameJ1 = "Joueur 1";        		//Remplace le nom de Joueur1 par "Joueur 1"
 				}
 				if(contreOrdi){
 					nameJ2 = "L'ordinateur";
 				}else{
 					nameJ2 = textField2.getText();
-					if(nameJ2.isEmpty()){							//Remplace le nom de Joueur2 par "Joueur 2"
+					if(nameJ2.isEmpty()){			//Remplace le nom de Joueur2 par "Joueur 2"
 						nameJ2 = "Joueur 2";
 					}
 				}
@@ -126,13 +130,13 @@ public class Main{
 		panel2.add(buttonMusique, BorderLayout.NORTH);
 
 		
-		//Ajoute la fenêtre principale et la configure
+		//Ajoute la fenêtre principale et configure la dispotion de ses éléments
 		frame1.add(panel2, BorderLayout.SOUTH);
 		panel1.add(label3, BorderLayout.NORTH);
 		frame1.add(panel1, BorderLayout.CENTER);
 		frame1.add(label5, BorderLayout.NORTH);
-		frame1.setLocationRelativeTo(null);
-		frame1.setVisible(true);
-		frame1.validate();
+		frame1.setLocationRelativeTo(null);	//Centre la fenêtre
+		frame1.setVisible(true);		//Rend la fenêtre visible
+		frame1.validate();			//Valide la disposition de la fenêtre		
 	}
 }
