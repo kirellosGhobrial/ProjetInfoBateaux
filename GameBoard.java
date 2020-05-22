@@ -27,6 +27,7 @@ public class GameBoard{
 	boolean allowMouse2 = false;
 	boolean posAttChoisi = false; 
 	boolean ordi;
+	boolean difficile;
 	boolean effetAudio = true;
 	JFrame mainFrame = new JFrame();
 	JPanel top = new JPanel();	
@@ -52,17 +53,30 @@ public class GameBoard{
 	ImageIcon imgMusiqueMute = new ImageIcon(new ImageIcon("musiqueMute.png").getImage().getScaledInstance(20, 20, Image.SCALE_DEFAULT));
 	ImageIcon imgSon  = new ImageIcon(new ImageIcon("son.png").getImage().getScaledInstance(20, 20, Image.SCALE_DEFAULT));
 	ImageIcon imgSonMute = new ImageIcon(new ImageIcon("sonMute.png").getImage().getScaledInstance(20, 20, Image.SCALE_DEFAULT));
+	JMenuBar mbMenu = new JMenuBar();    
+	JMenu mMenu = new JMenu("Menu");    
+	JMenuItem miRecommencer = new JMenuItem("recommencer");
+	JMenuItem miNouveau = new JMenuItem("Nouveau jeu");
 	Audio musiqueBataille = new Audio("BattleshipSong.wav");
 	Audio explosion = new Audio("Explosion.wav");
 	Audio tombeDansLeau = new Audio("tombeDansLeau.wav");
 		
 		
-	public GameBoard(String name1, String name2, boolean mode){
+	public GameBoard(String name1, String name2, int mode){
 		musiqueBataille.changeSon();
 		j1.nomJoueur = name1;
 		j2.nomJoueur = name2;
-		ordi = mode;
-		
+		if(mode == 0){
+			ordi = false;
+		}else if(mode == 1){
+			ordi = true;
+			difficile = false;
+		}else{
+			ordi = true;
+			difficile = true;
+		}
+		System.out.println(ordi+" "+difficile);
+
 		//set frame
 		mainFrame.setLayout(new BorderLayout());
 		mainFrame.setTitle("BATAILLE NAVALE");
@@ -71,6 +85,29 @@ public class GameBoard{
 		tailleEcranY = tailleEcran.height-50;
 		mainFrame.setSize(tailleEcranX, tailleEcranY);
 		mainFrame.setResizable(false);
+		
+		//set menu
+		mMenu.add(miRecommencer);
+		mMenu.add(miNouveau);
+		mbMenu.add(mMenu);
+		mainFrame.setJMenuBar(mbMenu);
+
+		miRecommencer.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent evt){
+				mainFrame.dispose();
+				musiqueBataille.arreteSon();
+				new GameBoard(name1, name2, mode);
+			}
+		});
+		miNouveau.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent evt){
+				mainFrame.dispose();
+				musiqueBataille.arreteSon();
+				new Main();
+			}
+		});
 		
 		//maps
 		mainFrame.add(map1, BorderLayout.EAST);
@@ -170,20 +207,7 @@ public class GameBoard{
 									lblCentre1.setForeground(Color.BLACK);
 									mapClear(area1);
 									mapClear(area2);
-									JDialog diaTest = new JDialog();
-									JButton btnTest = new JButton("changement de joueur");
-									btnTest.addActionListener(new ActionListener(){
-										@Override
-										public void actionPerformed(ActionEvent evt){
-											diaTest.dispose();
-										}
-							
-									});
-									diaTest.add(btnTest);
-									diaTest.setSize(200,100);
-									diaTest.setLocation(tailleEcranX/2 -100, tailleEcranY/2);
-									diaTest.setModal(true);
-									diaTest.setVisible(true);
+									JOptionPane.showMessageDialog(mainFrame,"Changement de joueur");
 									refreshMap1(j2.tabBat);
 									refreshMap2(j2.tabEn);
 									lblCentre2.setForeground(Color.GREEN);
@@ -218,20 +242,7 @@ public class GameBoard{
 								lblCentre2.setForeground(Color.BLACK);
 								mapClear(area1);
 								mapClear(area2);
-								JDialog diaTest = new JDialog();
-								JButton btnTest = new JButton("changement de joueur");
-								btnTest.addActionListener(new ActionListener(){
-									@Override
-									public void actionPerformed(ActionEvent evt){
-										diaTest.dispose();
-									}
-						
-								});
-								diaTest.add(btnTest);
-								diaTest.setSize(200,100);
-								diaTest.setLocation(tailleEcranX/2 - 100, tailleEcranY/2);
-								diaTest.setModal(true);
-								diaTest.setVisible(true);
+								JOptionPane.showMessageDialog(mainFrame,"Changement de joueur");
 								refreshMap1(j1.tabBat);
 								refreshMap2(j1.tabEn);
 								jou=1;
@@ -715,6 +726,7 @@ public class GameBoard{
 					if(!ordi){
 						mapClear(area1);
 						mapClear(area2);
+						/*
 						JDialog diaTest = new JDialog();
 						JButton btnTest = new JButton("Commencer la bataille");
 						btnTest.addActionListener(new ActionListener(){
@@ -729,6 +741,8 @@ public class GameBoard{
 						diaTest.setLocation(tailleEcranX/2 -150, tailleEcranY/2);
 						diaTest.setModal(true);
 						diaTest.setVisible(true);
+						*/
+						JOptionPane.showMessageDialog(mainFrame,"Changement de joueur");
 						lblCentre1.setForeground(Color.GREEN);
 						lblCentre3.setText("Attaquez !");
 						refreshMap1(j1.tabBat);
@@ -919,12 +933,14 @@ public class GameBoard{
 			public void actionPerformed(ActionEvent evt){
 				int intTemp;
 				int grandeVal = 0;
-				for(int i=0; i<carteOrdi.length; i++){
-					for(int j=0; j<carteOrdi[0].length; j++){
-						if(carteOrdi[i][j]>grandeVal){
-							grandeVal = carteOrdi[i][j];
-							coordX = j;
-							coordY = i;
+				if(difficile){
+					for(int i=0; i<carteOrdi.length; i++){
+						for(int j=0; j<carteOrdi[0].length; j++){
+							if(carteOrdi[i][j]>grandeVal){
+								grandeVal = carteOrdi[i][j];
+								coordX = j;
+								coordY = i;
+							}
 						}
 					}
 				}

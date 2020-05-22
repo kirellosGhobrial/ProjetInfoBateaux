@@ -30,11 +30,10 @@ public class Joueur{
 		for(int i = 0; i<listBat.length; i++){
 			for(int j = 0; j<listBat[i].posBat.length; j++){
 				if(listBat[i].posBat[j][0] == y && listBat[i].posBat[j][1] == x){
-					System.out.print(listBat[i].posTouche[j] + " attaque faite a "
+					System.out.print(" attaque faite a "
 									+ y + " " + x + "  "+listBat[i].toString()+ " "
 									);
 					listBat[i].posTouche[j] = true;
-					System.out.println(listBat[i].posTouche[j]);
 					return listBat[i];
 				}
 			}
