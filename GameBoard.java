@@ -949,7 +949,6 @@ public class GameBoard{
 						coor[0] = (int) ( Math.random() * largeur );
 						coor[1] = (int) ( Math.random() * longueur );
 						if(j2.tabEn[coor[0]][coor[1]] == 0){
-							area2Int[coor[0]][coor[1]] = 3;
 							coordX = coor[1];
 							coordY = coor[0];
 							btnAttaque.requestFocus();
