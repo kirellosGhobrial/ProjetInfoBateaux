@@ -24,8 +24,8 @@ public class Main{
 	//Insertion d'une image à partir de son URL
 	ImageIcon battle = new ImageIcon("batailleNavale.png"); 
 	// redimensionner l'image pour s'adapter à la taille du bouton
-	ImageIcon musiqueOn = new ImageIcon(new ImageIcon("musicOn.png").getImage().getScaledInstance(20, 20, Image.SCALE_DEFAULT));
-	ImageIcon mute = new ImageIcon(new ImageIcon("mute.png").getImage().getScaledInstance(20, 20, Image.SCALE_DEFAULT));
+	ImageIcon musiqueOn = new ImageIcon(new ImageIcon("musique.png").getImage().getScaledInstance(20, 20, Image.SCALE_DEFAULT));
+	ImageIcon mute = new ImageIcon(new ImageIcon("musiqueMute.png").getImage().getScaledInstance(20, 20, Image.SCALE_DEFAULT));
 	JButton buttonMusique = new JButton(musiqueOn);
 	JLabel label5 = new JLabel(battle, JLabel.CENTER);
 	boolean contreOrdi = false;
@@ -54,11 +54,9 @@ public class Main{
 				}
 			}
 		});
-
-		frame1.setLayout(new BorderLayout());
 		frame1.setSize(1000,400); 		//Taille de la fenêtre
+		frame1.setLayout(new BorderLayout());
 		frame1.setResizable(false);     //(False) N'autorise pas la modification de la taille de la fenêtre 	
-			
 		textField1.setBounds(10, 200, 100, 10);
 		textField2.setSize(label2.getPreferredSize());
 		label1.setSize(label2.getPreferredSize());

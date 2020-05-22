@@ -2,13 +2,13 @@ import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 import javax.swing.border.Border;
+@SuppressWarnings("unchecked") //il donne un warning quand on déclare un tableau de String ( String[] );
 
-
-public class GameBoard {
+public class GameBoard{
 	
 	Joueur j1 = new Joueur(10, 10, "Joueur 1");
 	Joueur j2 = new Joueur(10, 10, "Joueur 2");
-	int nbAttaque =1;
+	int nbAttaque = 1;
 	int jou = 1;
 	int batLon = 3;
 	int batDir = 2;
@@ -26,8 +26,8 @@ public class GameBoard {
 	boolean allowMouse1 = false;
 	boolean allowMouse2 = false;
 	boolean posAttChoisi = false; 
-	boolean ordi ;
-	
+	boolean ordi;
+	boolean effetAudio = true;
 	JFrame mainFrame = new JFrame();
 	JPanel top = new JPanel();	
 	JPanel centre = new JPanel(new BorderLayout());
@@ -40,12 +40,18 @@ public class GameBoard {
 	JLabel lblCentre2 = new JLabel();
 	JLabel lblCentre3 = new JLabel();
 	JLabel lblCentre4 = new JLabel();
-	JLabel lblCentre5 = new JLabel();	
+	JLabel lblCentre5 = new JLabel();
+	String[] listNomBat = {"porte avion de taille 5", "cargo de taille 4", "voilier de taille 3", "voilier de taille 3", "barque de taille 2"};	
+	JList list;
+	DefaultListModel listModel = new DefaultListModel();
 	JButton btnBateau = new JButton("commencer");
 	JButton btnAttaque = new JButton("attaque");
 	JButton btnMusique = new JButton();
-	ImageIcon imgMusique  = new ImageIcon(new ImageIcon("musicOn.png").getImage().getScaledInstance(20, 20, Image.SCALE_DEFAULT));
-	ImageIcon imgMute = new ImageIcon(new ImageIcon("mute.png").getImage().getScaledInstance(20, 20, Image.SCALE_DEFAULT));
+	JButton btnSon = new JButton();
+	ImageIcon imgMusique  = new ImageIcon(new ImageIcon("musique.png").getImage().getScaledInstance(20, 20, Image.SCALE_DEFAULT));
+	ImageIcon imgMusiqueMute = new ImageIcon(new ImageIcon("musiqueMute.png").getImage().getScaledInstance(20, 20, Image.SCALE_DEFAULT));
+	ImageIcon imgSon  = new ImageIcon(new ImageIcon("son.png").getImage().getScaledInstance(20, 20, Image.SCALE_DEFAULT));
+	ImageIcon imgSonMute = new ImageIcon(new ImageIcon("sonMute.png").getImage().getScaledInstance(20, 20, Image.SCALE_DEFAULT));
 	Audio musiqueBataille = new Audio("BattleshipSong.wav");
 	Audio explosion = new Audio("Explosion.wav");
 	Audio tombeDansLeau = new Audio("tombeDansLeau.wav");
@@ -111,10 +117,14 @@ public class GameBoard {
 		lblTop.setSize(lblTop.getPreferredSize());
 		lblTop.setBounds( (tailleEcranX/2) - (lblTop.getWidth()/2) , 0, 200,30);
 		top.add(lblTop);
-		btnMusique.setBounds((int) (tailleEcranX*0.8)-5 , 0, (int) (tailleEcranX*0.2),30);
+		btnMusique.setBounds( tailleEcranX*90/100 -5 , 0, tailleEcranX*10/100, 30);
 		btnMusique.setIcon(imgMusique);
 		top.add(btnMusique);
 		btnMusique.setFocusable(false);
+		btnSon.setBounds( tailleEcranX*80/100 -5 , 0, tailleEcranX*10/100, 30);
+		btnSon.setIcon(imgSon);
+		top.add(btnSon);
+		btnSon.setFocusable(false);
 		
 		//centre
 		mainFrame.add(centre, BorderLayout.CENTER);
@@ -147,18 +157,35 @@ public class GameBoard {
 							return;
 						}
 						refreshMap2(j1.tabEn);
-						Timer timer = new Timer(2000, new ActionListener(){
+						
+						Timer timer = new Timer(1000, new ActionListener(){
 							@Override
 							public void actionPerformed(ActionEvent evt){
 								jou =2;
 								if(ordi){
 									ordiAttaque();
 								}else{
+									lblCentre5.setText("");
+									lblCentre3.setText("");									
+									lblCentre1.setForeground(Color.BLACK);
+									mapClear(area1);
+									mapClear(area2);
+									JDialog diaTest = new JDialog();
+									JButton btnTest = new JButton("changement de joueur");
+									btnTest.addActionListener(new ActionListener(){
+										@Override
+										public void actionPerformed(ActionEvent evt){
+											diaTest.dispose();
+										}
+							
+									});
+									diaTest.add(btnTest);
+									diaTest.setSize(200,100);
+									diaTest.setLocation(tailleEcranX/2 -100, tailleEcranY/2);
+									diaTest.setModal(true);
+									diaTest.setVisible(true);
 									refreshMap1(j2.tabBat);
 									refreshMap2(j2.tabEn);
-									lblCentre5.setText("");
-									lblCentre1.setForeground(Color.BLACK);
-									lblCentre3.setText("");
 									lblCentre2.setForeground(Color.GREEN);
 									lblCentre4.setText("Attaquez !");
 									allowMouse2 = true;
@@ -183,17 +210,33 @@ public class GameBoard {
 							return;
 						}
 						refreshMap2(j2.tabEn);
-						Timer timer = new Timer(2000, new ActionListener(){
+						Timer timer = new Timer(1000, new ActionListener(){
 							@Override
 							public void actionPerformed(ActionEvent evt){
+								lblCentre5.setText("");
+								lblCentre4.setText("");
+								lblCentre2.setForeground(Color.BLACK);
+								mapClear(area1);
+								mapClear(area2);
+								JDialog diaTest = new JDialog();
+								JButton btnTest = new JButton("changement de joueur");
+								btnTest.addActionListener(new ActionListener(){
+									@Override
+									public void actionPerformed(ActionEvent evt){
+										diaTest.dispose();
+									}
+						
+								});
+								diaTest.add(btnTest);
+								diaTest.setSize(200,100);
+								diaTest.setLocation(tailleEcranX/2 - 100, tailleEcranY/2);
+								diaTest.setModal(true);
+								diaTest.setVisible(true);
 								refreshMap1(j1.tabBat);
 								refreshMap2(j1.tabEn);
 								jou=1;
 								nbAttaque++;
 								allowMouse2 = true;
-								lblCentre5.setText("");
-								lblCentre2.setForeground(Color.BLACK);
-								lblCentre4.setText("");
 								lblCentre1.setForeground(Color.GREEN);								
 								lblCentre3.setText("Attaquez !");
 							}
@@ -236,11 +279,22 @@ public class GameBoard {
 				if(musiqueBataille.estSon){
 					btnMusique.setIcon(imgMusique);
 				}else{
-					btnMusique.setIcon(imgMute);
+					btnMusique.setIcon(imgMusiqueMute);
 				}
 			}
 		});
-		
+		btnSon.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent evt){
+				if(effetAudio){
+					btnSon.setIcon(imgSonMute);
+					effetAudio = false;
+				}else{
+					btnSon.setIcon(imgSon);
+					effetAudio = true;
+				}
+			}
+		});
 		//add , visible
 		mainFrame.setLocationRelativeTo(null);
 		mainFrame.setVisible(true);
@@ -248,8 +302,8 @@ public class GameBoard {
 		
 		int wd = centre.getWidth();
 		int hgt = centre.getHeight();
-		btnBateau.setBounds(wd /3, hgt*85/100, wd/3 , hgt*5/100);
-		btnAttaque.setBounds(wd /3, hgt*85/100, wd/3 , hgt*5/100);
+		btnBateau.setBounds(wd /3, hgt*40/100, wd/3 , hgt*5/100);
+		btnAttaque.setBounds(wd /3, hgt*60/100, wd/3 , hgt*5/100);
 		centre.add(btnBateau);
 		btnBateau.requestFocus();
 		//haut à droite
@@ -278,8 +332,14 @@ public class GameBoard {
 		lblCentre5.setBounds(wd/4, hgt*50/100, wd/2 , hgt*10/100);
 		lblCentre5.setHorizontalAlignment(JLabel.CENTER);
 		lblCentre5.setFont(new Font("", Font.BOLD, 20));
-		centre.add(lblCentre5);		
-		
+		centre.add(lblCentre5);	
+		//list
+		for(String nom : listNomBat){
+			listModel.addElement(nom);
+		}
+		list = new JList(listModel);
+		list.setBounds(wd*1/4, hgt*70/100, wd*1/2, hgt*15/100);
+		centre.add(list);
 	}
 
 	public class mouseMvtMap1 implements MouseListener{
@@ -613,37 +673,62 @@ public class GameBoard {
 			case 1:
 				Bateau bat1 = new Bateau(1, batDir, coor[1], coor[0]);
 				joueur.ajouteBateau(bat1);
+				listModel.remove(0);
 				lbl1.setText(alignCenter+"Placez le deuxieme bateau, c'est un cargo ");
 				batLon = 4;
 				break;
 			case 2:
 				Bateau bat2 = new Bateau(2, batDir, coor[1], coor[0]);
 				joueur.ajouteBateau(bat2);
+				listModel.remove(0);
 				lbl1.setText(alignCenter+"Placez le troisime bateau, c'est un voilier");
 				batLon = 3;
 				break;
 			case 3:
 				Bateau bat3 = new Bateau(3, batDir, coor[1], coor[0]);
 				joueur.ajouteBateau(bat3);
+				listModel.remove(0);
 				lbl1.setText(alignCenter+"Placez  le quatrieme bateau, c'est un voilier ");
 				batLon = 3;
 				break;
 			case 4:
 				Bateau bat4 = new Bateau(3, batDir, coor[1], coor[0]);
 				joueur.ajouteBateau(bat4);
+				listModel.remove(0);
 				lbl1.setText(alignCenter+"Placez le cinquieme bateau, c'est un barque ");
 				batLon = 2;
 				break;
 			case 5:
 				Bateau bat5 = new Bateau(4, batDir, coor[1], coor[0]);
 				joueur.ajouteBateau(bat5);
+				listModel.remove(0);
 				lbl1.setText("");
 				if(jou==2){
+					centre.remove(list);
+					mainFrame.invalidate();
+					mainFrame.validate();
+					mainFrame.repaint();
 					lblCentre3.setText("");
 					lblCentre4.setText("");
 					allowMouse1 = false;
 					jou = 1;
 					if(!ordi){
+						mapClear(area1);
+						mapClear(area2);
+						JDialog diaTest = new JDialog();
+						JButton btnTest = new JButton("Commencer la bataille");
+						btnTest.addActionListener(new ActionListener(){
+							@Override
+							public void actionPerformed(ActionEvent evt){
+								diaTest.dispose();
+							}
+				
+						});
+						diaTest.add(btnTest);
+						diaTest.setSize(300,100);
+						diaTest.setLocation(tailleEcranX/2 -150, tailleEcranY/2);
+						diaTest.setModal(true);
+						diaTest.setVisible(true);
 						lblCentre1.setForeground(Color.GREEN);
 						lblCentre3.setText("Attaquez !");
 						refreshMap1(j1.tabBat);
@@ -663,11 +748,14 @@ public class GameBoard {
 				mapIntClear(area1Int);
 				batLon = 5;
 				lbl2.setText(alignCenter+"Placez le premier bateau, c'est un porte-avion ");
+				for(String nom : listNomBat){
+					listModel.addElement(nom);
+				}
 				if(ordi){
 					numBat = 1;
 					ordiPlacerBateau();
-					lblCentre4.setText(alignCenter+"L'ordinateur est en train, de mettre ses bateaux");
-					Timer timer = new Timer(3000, new ActionListener(){
+					lblCentre4.setText(alignCenter+"L'ordinateur est en train de mettre ses bateaux");
+					Timer timer = new Timer(1000, new ActionListener(){
 						@Override 
 						public void actionPerformed(ActionEvent evt){
 							lblCentre1.setForeground(Color.GREEN);
@@ -714,7 +802,9 @@ public class GameBoard {
 				lblCentre5.setForeground(Color.RED);
 				jTemp1.tabEn[y][x] =  1;
 				jTemp2.tabBat[y][x] = 5;
-				tombeDansLeau.mettreSon();
+				if(effetAudio){
+					tombeDansLeau.mettreSon();
+				}
 				if(ordi && jou ==2){
 					carteOrdi[y][x] = 0;
 				}
@@ -725,7 +815,9 @@ public class GameBoard {
 				jTemp1.tabEn[y][x] = 2;
 				jTemp2.tabBat[y][x] = 2;
 				Bateau batTemp = jTemp2.attaqueBat(y,x);
-				explosion.mettreSon();
+				if(effetAudio){
+					explosion.mettreSon();
+				}
 				if(batTemp.estCoule()){
 					for(int n=0; n<batTemp.posBat.length; n++){
 						jTemp2.tabBat[batTemp.posBat[n][0]][batTemp.posBat[n][1]] = 4; 
@@ -822,7 +914,7 @@ public class GameBoard {
 		lblCentre3.setText("");
 		lblCentre2.setForeground(Color.GREEN);
 		lblCentre4.setText("<html><body style='text-align:center'> L'ordinateur est en train d'attaquer");
-		Timer timer = new Timer(3000, new ActionListener(){
+		Timer timer = new Timer(1000, new ActionListener(){
 			@Override 
 			public void actionPerformed(ActionEvent evt){
 				int intTemp;
@@ -840,7 +932,7 @@ public class GameBoard {
 					while(true){
 						coor[0] = (int) ( Math.random() * largeur );
 						coor[1] = (int) ( Math.random() * longueur );
-						if(area2Int[coor[0]][coor[1]] == 0){
+						if(j2.tabEn[coor[0]][coor[1]] == 0){
 							area2Int[coor[0]][coor[1]] = 3;
 							coordX = coor[1];
 							coordY = coor[0];
@@ -859,7 +951,7 @@ public class GameBoard {
 				System.out.println();
 				System.out.println();
 				refreshMap1(j1.tabBat);
-				Timer timer2 = new Timer(2000, new ActionListener(){
+				Timer timer2 = new Timer(1000, new ActionListener(){
 					@Override
 					public void actionPerformed(ActionEvent evt2){		
 						if(intTemp ==5){
@@ -883,5 +975,4 @@ public class GameBoard {
 		timer.setRepeats(false);
 		timer.start();
 	}
-
 }
