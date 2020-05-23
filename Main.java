@@ -29,8 +29,8 @@ public class Main{
 	// redimensionner l'image pour s'adapter à la taille du bouton
 	ImageIcon musiqueOn = new ImageIcon(new ImageIcon("musique.png").getImage().getScaledInstance(20, 20, Image.SCALE_DEFAULT));
 	ImageIcon mute = new ImageIcon(new ImageIcon("musiqueMute.png").getImage().getScaledInstance(20, 20, Image.SCALE_DEFAULT));
-	Audio sonBataille = new Audio("BattleshipSong.wav");
-	JButton buttonMusique = new JButton(musiqueOn);
+	Audio musiqueBataille = new Audio("BattleshipSong.wav");
+	JButton btnMusique = new JButton(musiqueOn);
 	JLabel label5 = new JLabel(battle);
 
 	public static void main(String[] args){
@@ -39,26 +39,10 @@ public class Main{
 	
 	public Main(){
 		
+		musiqueBataille.changeSon();
 		Dimension tailleFenetre = Toolkit.getDefaultToolkit().getScreenSize();
 		int tailleFenetreX = tailleFenetre.width*3/4;
 		int tailleFenetreY = tailleFenetre.height*1/2;
-		
-		
-		//le son du jeu
-		sonBataille.changeSon();
-		buttonMusique.setFocusable(false);
-		buttonMusique.addActionListener(new ActionListener(){
-			@Override
-			public void actionPerformed(ActionEvent evt){
-				sonBataille.changeSon();
-				if(sonBataille.estSon){
-					buttonMusique.setIcon(musiqueOn);
-				}else{
-					buttonMusique.setIcon(mute);
-				}
-			}
-		});
-
 		frame1.setLayout(new BorderLayout());
 		frame1.setSize(1000,400); 		//Taille de la fenêtre
 		frame1.setResizable(false);     //(False) N'autorise pas la modification de la taille de la fenêtre 	
@@ -67,7 +51,37 @@ public class Main{
 		label1.setSize(label2.getPreferredSize());
 		commencer.setBounds(100, 500, 50, 50);
 		label2.setSize(label2.getPreferredSize());
+
 		
+		//Ajoute les boutons
+		panel2.add(multijoueur);
+		panel2.add(ordinateur);
+		panel2.add(btnMusique, BorderLayout.NORTH);
+		btnMusique.setFocusable(false);
+		bgDifficulte.add(rbFacile);
+		bgDifficulte.add(rbDifficile);
+		
+		//Ajoute la fenêtre principale et la configure
+		frame1.add(panel2, BorderLayout.SOUTH);
+		panel1.add(label3, BorderLayout.NORTH);
+		frame1.add(panel1, BorderLayout.CENTER);
+		frame1.add(label5, BorderLayout.NORTH);
+		frame1.setLocationRelativeTo(null);
+		frame1.setVisible(true);
+		
+		//Action de la souris sur le bouton "musique"
+		btnMusique.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent evt){
+				musiqueBataille.changeSon();
+				if(musiqueBataille.estSon){
+					btnMusique.setIcon(musiqueOn);
+				}else{
+					btnMusique.setIcon(mute);
+				}
+			}
+		});
+
 		//Action de la souris sur le bouton "Multijoueur"
 		multijoueur.addActionListener(new ActionListener(){
 			@Override
@@ -84,7 +98,6 @@ public class Main{
 				panel1.add(commencer);
 				panel2.add(retourner, BorderLayout.EAST);
 			}
-			
 		});
 
 		//Action de la souris sur le bouton "Ordinateur"
@@ -106,11 +119,12 @@ public class Main{
 			}
 		});
 		
+		//Action de la souris sur le bouton "retourner"
 		retourner.addActionListener(new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent evt){
 				frame1.dispose();
-				sonBataille.arreteSon();
+				musiqueBataille.arreteSon();
 				new Main();
 			}
 		});
@@ -126,10 +140,8 @@ public class Main{
 				if(!(mode==0)){
 					nameJ2 = "ordi";
 					if(rbDifficile.isSelected()){
-						System.out.println("difficile");
 						mode = 2;
 					}else if(rbFacile.isSelected()){
-						System.out.println("facile");
 						mode = 1;
 					}
 				}else{
@@ -138,28 +150,10 @@ public class Main{
 						nameJ2 = "Joueur 2";
 					}
 				}
-				sonBataille.arreteSon();
-				GameBoard start = new GameBoard(nameJ1, nameJ2, mode); //Le jeu débute
+				musiqueBataille.arreteSon();
+				new GameBoard(nameJ1, nameJ2, mode); //Le jeu débute
 				frame1.dispose();	
 			}
 		});
-		
-		
-	
-		//Ajoute les boutons
-		panel2.add(multijoueur);
-		panel2.add(ordinateur);
-		panel2.add(buttonMusique, BorderLayout.NORTH);
-		bgDifficulte.add(rbFacile);
-		bgDifficulte.add(rbDifficile);
-		
-		//Ajoute la fenêtre principale et la configure
-		frame1.add(panel2, BorderLayout.SOUTH);
-		panel1.add(label3, BorderLayout.NORTH);
-		frame1.add(panel1, BorderLayout.CENTER);
-		frame1.add(label5, BorderLayout.NORTH);
-		frame1.setLocationRelativeTo(null);
-		frame1.setVisible(true);
-		frame1.validate();
 	}
 }

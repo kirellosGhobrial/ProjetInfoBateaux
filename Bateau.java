@@ -11,25 +11,32 @@ public class Bateau {
     public boolean[] posTouche;
     public String coule = "le bateau n'est pas encore coule";
 
-    public Bateau(int nb,int orient, int x, int y) {
-        if( nb == 4){
-		    this.tailleBateau = 2;
-		    this.nomBateau = "barque";
-		}else if(nb ==3 ){
-			this.tailleBateau = 3;
-			this.nomBateau = "voilier";
-    	}else if( nb == 2){
-			this.tailleBateau = 4;
-			this.nomBateau = "cargo";
-        }else if( nb == 1){
-			this.tailleBateau = 5;
-			this.nomBateau = "porte-avion";
-        }
+    public Bateau(int  num,int orient, int x, int y) {
+		switch(num){ //le numéro du bateau
+			case 4 :
+				this.tailleBateau = 2;
+				this.nomBateau = "barque";
+				break;
+			case 3 :
+				this.tailleBateau = 3;
+				this.nomBateau = "voilier";
+				break;
+			case 2 :
+				this.tailleBateau = 4;
+				this.nomBateau = "cargo";
+				break;
+			case 1 :
+				this.tailleBateau = 5;
+				this.nomBateau = "porte-avion";
+				break;
+			default:
+				break;
+		}
 		this.orientation = orient;
 		this.coordonneesBateauX = x;
 		this.coordonneesBateauY = y;
-		posBat = new int[tailleBateau][2];
-		posTouche = new boolean[tailleBateau];
+		posBat = new int[tailleBateau][2]; //créer un tableau 2D qui contient les coordonnées 
+		posTouche = new boolean[tailleBateau]; //créer un tableau 2D qui contient l'état de chaque case du bateau
 		if(orient == 1){
 			orientStr ="vertical";
 			for(int i = 0; i<tailleBateau; i++){
@@ -43,7 +50,6 @@ public class Bateau {
 				posBat[i][1] = x +i;
 			}
 		}
-		System.out.println(orientStr+ "");
     }
     
     public boolean estCoule(){
