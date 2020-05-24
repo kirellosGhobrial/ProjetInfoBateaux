@@ -553,7 +553,7 @@ public class GameBoard{
 		
 	}
 	
-	//les actions à éxecuter quand le souris interagit avec la grille à droite
+	//les actions à éxecuter quand le souris interagit avec la grille à gauche
 	public class  mvtSourisCarteG implements MouseListener{
 		@Override 
 		public void mouseEntered(MouseEvent evt){
