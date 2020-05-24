@@ -367,8 +367,8 @@ public class GameBoard{
 		@Override 
 		public void mouseEntered(MouseEvent evt){
 			if(SourisCarteD){
-				JLabel square = (JLabel)evt.getSource(); 
-				coor = trouverIndice(grille1, square); 	// chercher les coordonnées de la grille
+				JLabel carreau = (JLabel)evt.getSource(); 
+				coor = trouverIndice(grille1, carreau); 	// chercher les coordonnées de la grille
 				Color color = Color.GREEN;
 				if(batDir == 1){ // batDir = 1 -> horizontal , 2 -> vertical
 					for(int i = coor[0]; i<coor[0]+batLon; i++){
@@ -417,8 +417,8 @@ public class GameBoard{
 			//remettre les couleurs initiales avant que la souris entre dans cette case
 			if(SourisCarteD){
 				lblCentre5.setText("");
-				JLabel square = (JLabel)evt.getSource();
-				coor = trouverIndice(grille1, square);
+				JLabel carreau = (JLabel)evt.getSource();
+				coor = trouverIndice(grille1, carreau);
 				if(batDir == 1){ 
 					for(int i = coor[0]; i<coor[0]+batLon; i++){
 						if(i<grille1.length && grille1Int[i][coor[1]] == 0){
@@ -438,8 +438,8 @@ public class GameBoard{
 		@Override 
 		public void mouseClicked(MouseEvent evt) {
 			if(SourisCarteD){
-				JLabel square = (JLabel)evt.getSource();
-				coor = trouverIndice(grille1, square);
+				JLabel carreau = (JLabel)evt.getSource();
+				coor = trouverIndice(grille1, carreau);
 				if(evt.getButton() == MouseEvent.BUTTON1){ //BUTTON1 c'est le clic gauche
 					if(batDir == 1){
 						for(int i = coor[0]; i<coor[0]+batLon; i++){
@@ -534,8 +534,8 @@ public class GameBoard{
 		@Override 
 		public void mouseEntered(MouseEvent evt){
 			if(SourisCarteG){	
-				JLabel square = (JLabel)evt.getSource();
-				coor = trouverIndice(grille2, square);
+				JLabel carreau = (JLabel)evt.getSource();
+				coor = trouverIndice(grille2, carreau);
 				if(grille2Int[coor[0]][coor[1]] == 0){
 					grille2[coor[0]][coor[1]].setBackground(Color.LIGHT_GRAY); //changement de couleur pour marquer la case
 				}
@@ -545,8 +545,8 @@ public class GameBoard{
 		@Override 
 		public void mouseExited(MouseEvent evt){
 			if(SourisCarteG){	
-					JLabel square = (JLabel)evt.getSource();
-					int[] coor = trouverIndice(grille2, square);
+					JLabel carreau = (JLabel)evt.getSource();
+					int[] coor = trouverIndice(grille2, carreau);
 				if(grille2Int[coor[0]][coor[1]] == 0){
 					grille2[coor[0]][coor[1]].setBackground(Color.CYAN); // remettre les coulers initiales en sortant de la case
 				}
@@ -556,8 +556,8 @@ public class GameBoard{
 		@Override
 		public void mouseClicked(MouseEvent evt) {
 			if(SourisCarteG){
-				JLabel square = (JLabel)evt.getSource();
-				coor = trouverIndice(grille2, square);
+				JLabel carreau = (JLabel)evt.getSource();
+				coor = trouverIndice(grille2, carreau);
 				if(grille2Int[coordY][coordX]==3){ //si il y avait une case déjà sélectionnée, il remet sa couleur initiale
 						grille2[coordY][coordX].setBackground(Color.CYAN);
 						grille2Int[coordY][coordX] = 0;
@@ -822,8 +822,10 @@ public class GameBoard{
 						jTemp1.tabAtt[batTemp.posBat[n][0]][batTemp.posBat[n][1]] = 4; 
 					}
 					//mettre à jour la carte d'ordi 
-					majCarteOrdi();
-				}else if(ordi && jou ==2){ // si le bateau n'est pas coulé
+					if(difficile){
+						majCarteOrdi();
+					}
+				}else if(ordi && jou ==2 && difficile){ // si le bateau n'est pas coulé
 					for (int i = 0; i < carteOrdi.length; ++i) {
 						for (int j = 0; j < carteOrdi[0].length; ++j) {
 							//l'augmentation de la valuer des cases non attaquées
