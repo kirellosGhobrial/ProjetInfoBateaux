@@ -58,6 +58,7 @@ public class GameBoard{
 	JMenu mMenu = new JMenu("Menu");    
 	JMenuItem miRecommencer = new JMenuItem("recommencer");
 	JMenuItem miNouveau = new JMenuItem("Nouveau jeu");
+	JMenuItem miAide = new JMenuItem("Aide");
 	Audio musiqueBataille = new Audio("BattleshipSong.wav");
 	Audio explosion = new Audio("Explosion.wav");
 	Audio tombeDansLeau = new Audio("tombeDansLeau.wav");	
@@ -87,6 +88,7 @@ public class GameBoard{
 		//set menu
 		mMenu.add(miRecommencer);
 		mMenu.add(miNouveau);
+		mMenu.add(miAide);
 		mbMenu.add(mMenu);
 		mainFrame.setJMenuBar(mbMenu);
 		
@@ -357,6 +359,28 @@ public class GameBoard{
 				mainFrame.dispose();
 				musiqueBataille.arreteSon();
 				new Main();
+			}
+		});
+			
+		//l'affichage de comment jouer
+		miAide.addActionListener(new ActionListener(){
+			//fermer le jeu et retourner au menu principal
+			@Override
+			public void actionPerformed(ActionEvent evt){
+				JFrame aide = new JFrame();
+				aide.setLayout(new FlowLayout());
+				aide.setTitle("Aide"); 
+				aide.setSize(800,500);
+				JLabel lblAide = new JLabel();
+				lblAide.setText("<html><body style ='text-align:center'> pour placer un bateau faites un clic gauche  sur la grille a droite<br> "
+								+ " en verifiant que la couleur du bateau est vert avant de le placer <br><br>"
+								+ "changez l'orientation du bateau avec un clic droit <br><br>"
+								+ " pour attaquer : choisissez une case sur la grille a gauche et appuyez sur le button <br> "
+								+ " vous pouvez attaquer a l'aide de la barre d'espace sur le clavier " );
+				lblAide.setFont(new Font("",Font.PLAIN,15));
+				aide.add(lblAide);
+				aide.setLocationRelativeTo(null);
+				aide.setVisible(true);
 			}
 		});
 	}
@@ -858,7 +882,7 @@ public class GameBoard{
 		JPanel panelFini = new JPanel(new FlowLayout());
 		JLabel lblfini = new JLabel("BRAVO " +j.nomJoueur+", vous avez gagne");
 		if(j.nomJoueur == "ordi"){
-			lblfini = new JLabel("GAME OVER, vous avez perdu !!!" +j.nomJoueur);			
+			lblfini = new JLabel("GAME OVER, vous avez perdu !!!");			
 		}
 		panelFini.add(lblfini);
 		frameFini.add(panelFini, BorderLayout.CENTER);
