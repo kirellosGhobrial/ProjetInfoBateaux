@@ -292,6 +292,10 @@ public class GameBoard{
 			// préparer les grilles pour mettre (ou remettre) les bateaux et effacer les bateaux déjà mis (s'il y en a)
 			@Override
 			public void actionPerformed(ActionEvent evt){
+				listModel.removeAllElements();
+				for(String nom : listNomBat){
+					listModel.addElement(nom);
+				}
 				numBat=0;
 				mapClear(grille1);
 				mapIntClear(grille1Int);
