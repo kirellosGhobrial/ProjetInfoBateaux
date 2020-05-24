@@ -44,7 +44,7 @@ public class Main{
 		int tailleFenetreX = tailleFenetre.width*3/4;
 		int tailleFenetreY = tailleFenetre.height*1/2;
 		frame1.setLayout(new BorderLayout());
-		frame1.setSize(1000,400); 		//Taille de la fenêtre
+		frame1.setSize(900,500); 		//Taille de la fenêtre
 		frame1.setResizable(false);     //(False) N'autorise pas la modification de la taille de la fenêtre 	
 		textField1.setBounds(10, 200, 100, 10);
 		textField2.setSize(label2.getPreferredSize());
